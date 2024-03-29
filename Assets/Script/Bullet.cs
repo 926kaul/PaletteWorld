@@ -1,29 +1,37 @@
-using System.Collections;
-using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
+public class bullet : MonoBehaviour{
+    public float speed = 10f;
+    private float lifetime = 5f;
+    private float spawnTime;
+    private Vector2 direction;
+    private bool isclone = false;
 
-public class Bullet : MonoBehaviour
-{
-    private float speed;
-    private float ttl;
-    private float time;
-    // Start is called before the first frame update
-
-    public void SetBullet(float bulletSpeed, float bulletTime)
+    public void SetBullet(Vector2 bullet_direction)
     {
-        speed = bulletSpeed;
-        ttl = bulletTime;
-        time = 0;
+        direction = bullet_direction;
+        isclone = true;
+        gameObject.SetActive(true);
     }
-    // Update is called once per frame
-    void Update()
-    {
-        time += Time.deltaTime;
-        if (time >= ttl)
-        {
-            Destroy(gameObject);
+
+    void Start(){
+        if(!isclone){
+            gameObject.SetActive(false);
+        }
+        spawnTime = Time.time;
+    }
+    void Update(){
+        transform.Translate(Time.deltaTime * speed * direction.normalized);
+        if(((Time.time - spawnTime) > lifetime) && (isclone)){
+            Destroy(this.gameObject);
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other){
+        if(other.tag == "Enemy"){
+            other.GetComponent<Enemy>().giveDamage(10);
+            Destroy(this.gameObject);
         }
     }
 }
-

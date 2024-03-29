@@ -1,42 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
+
 
 public class PlayerAttack : MonoBehaviour
 {
-    [SerializeField] private GameObject bulletPrefab;
-    [SerializeField] private float bulletSpeed;
-    [SerializeField] private float bulletTime;
-    [SerializeField] private float fireRate;
-    
-    private bool _onFire;
-    private float fireTimer;
-    
-    
+    public GameObject bulletPrefab;
+    Vector2 MousePosition;
+    Vector2 pos;
+    Camera Camera;
+    // Start is called before the first frame update
+    private void Start(){
+        Camera = GameObject.Find("Main Camera").GetComponent<Camera>();
+    }
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            _onFire = true;
-            fireTimer = 0;
-        }
-
-        if (Input.GetMouseButtonUp(0))
-        {
-            _onFire = false;
-        }
-
-        if (_onFire)
-        {
-            fireTimer -= Time.deltaTime;
-        
-            if (fireTimer <= 0) {
-                var bullet = Instantiate(bulletPrefab);
-                bullet.transform.position = transform.position;
-                bullet.GetComponent<Bullet>().SetBullet(bulletSpeed, bulletTime);
-                fireTimer = fireRate;
-            }
+        if(Input.GetMouseButtonDown(0)){
+            MousePosition = Input.mousePosition;
+            MousePosition = Camera.ScreenToWorldPoint(MousePosition);
+            pos = this.transform.position;
+            GameObject bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
+            bullet.GetComponent<bullet>().SetBullet(MousePosition-pos);
         }
     }
 }
+
