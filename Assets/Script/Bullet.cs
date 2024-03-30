@@ -7,7 +7,7 @@ public class bullet : MonoBehaviour{
     private float spawnTime;
     private Vector2 direction;
     private bool isclone = false;
-    public Color color;
+    public Color32 color;
     private SpriteRenderer BulletRenderer;
 
     public void SetBullet(Vector2 bullet_direction,Color player_color)

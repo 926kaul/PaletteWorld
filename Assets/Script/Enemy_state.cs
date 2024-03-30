@@ -7,13 +7,13 @@ public class Enemy : MonoBehaviour
 
     [SerializeField] private int hp=100;
     [SerializeField] public int state=1;
-    public SpriteRenderer spriter;
+    public SpriteRenderer EnemyRender;
     public Sprite dead;
-    public Color color;
+    public Color32 color;
     
     void Start(){
-        spriter = GetComponent<SpriteRenderer>();
-        color = new Color(255,0,0);
+        EnemyRender = GetComponent<SpriteRenderer>();
+        EnemyRender.color = color;
     }
     void Update()
     {
@@ -24,7 +24,7 @@ public class Enemy : MonoBehaviour
 
     void LateUpdate(){
         if(state==0){
-            spriter.sprite = dead;
+            EnemyRender.sprite = dead;
         }
     }
 
