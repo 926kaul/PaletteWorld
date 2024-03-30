@@ -7,12 +7,17 @@ public class bullet : MonoBehaviour{
     private float spawnTime;
     private Vector2 direction;
     private bool isclone = false;
+    public Color color;
+    private SpriteRenderer BulletRenderer;
 
-    public void SetBullet(Vector2 bullet_direction)
+    public void SetBullet(Vector2 bullet_direction,Color player_color)
     {
         direction = bullet_direction;
         isclone = true;
         gameObject.SetActive(true);
+        color = player_color;
+        BulletRenderer = GetComponent<SpriteRenderer>();
+        BulletRenderer.color = color;
     }
 
     void Start(){
@@ -30,8 +35,12 @@ public class bullet : MonoBehaviour{
 
     private void OnTriggerEnter2D(Collider2D other){
         if(other.tag == "Enemy"){
-            other.GetComponent<Enemy>().giveDamage(10);
-            Destroy(this.gameObject);
+            Enemy enemy = other.GetComponent<Enemy>();
+            if(enemy.state==1){
+                enemy.giveDamage(10);
+                Destroy(this.gameObject);
+            }
         }
     }
+
 }

@@ -23,7 +23,7 @@ public class PlayerAttack : MonoBehaviour
             MousePosition = Camera.ScreenToWorldPoint(MousePosition);
             pos = this.transform.position;
             GameObject bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
-            bullet.GetComponent<bullet>().SetBullet(MousePosition-pos);
+            bullet.GetComponent<bullet>().SetBullet(MousePosition-pos,this.GetComponent<Player>().color);
         }
     }
 }

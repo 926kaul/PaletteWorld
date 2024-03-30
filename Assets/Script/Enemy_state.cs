@@ -4,17 +4,31 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    // Start is called before the first frame update
+
     [SerializeField] private int hp=100;
-    // Update is called once per frame
+    [SerializeField] public int state=1;
+    public SpriteRenderer spriter;
+    public Sprite dead;
+    public Color color;
+    
+    void Start(){
+        spriter = GetComponent<SpriteRenderer>();
+        color = new Color(255,0,0);
+    }
     void Update()
     {
         if(hp<=0){
-            Destroy(this.gameObject);
+            state=0;
+        }
+    }
+
+    void LateUpdate(){
+        if(state==0){
+            spriter.sprite = dead;
         }
     }
 
     public void giveDamage(int damage){
-        hp -= damage;
+            hp -= damage;
     }
 }
