@@ -136,6 +136,7 @@ GameObject:
   - component: {fileID: 455933406}
   - component: {fileID: 455933405}
   - component: {fileID: 455933404}
+  - component: {fileID: 455933409}
   m_Layer: 0
   m_Name: Enemy2
   m_TagString: Enemy
@@ -291,6 +292,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &455933409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 455933403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0230be80d34d514e939eb3c3f0851ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 0
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -527,7 +541,7 @@ GameObject:
   - component: {fileID: 1341053955}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -784,6 +798,7 @@ GameObject:
   - component: {fileID: 1922739443}
   - component: {fileID: 1922739445}
   - component: {fileID: 1922739446}
+  - component: {fileID: 1922739448}
   m_Layer: 0
   m_Name: Enemy1
   m_TagString: Enemy
@@ -939,6 +954,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1922739448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1922739442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0230be80d34d514e939eb3c3f0851ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 0
 --- !u!1001 &8577721758611812645
 PrefabInstance:
   m_ObjectHideFlags: 0

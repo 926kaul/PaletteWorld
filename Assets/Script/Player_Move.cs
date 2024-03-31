@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start(){
         color = new Color32(255,255,255,255);
+        speed = 5;
     }
     // Update is called once per frame
     void Update()
