@@ -6,7 +6,7 @@ using UnityEngine.Timeline;
 
 public class EnemyMove : MonoBehaviour
 {
-    [SerializeField] private float speed;
+    [SerializeField] public float speed;
     GameObject player;
     Vector2 automoveVector;
     System.Random rand;
@@ -30,7 +30,6 @@ public class EnemyMove : MonoBehaviour
             if(frame_cnt%120==0){
                 automoveVector = (player.transform.position - transform.position).normalized;
                 randVector = new Vector2((float)(rand.NextDouble()-0.5),(float)(rand.NextDouble()-0.5));
-                Debug.Log(randVector);
                 automoveVector = randVector;
             }
 
