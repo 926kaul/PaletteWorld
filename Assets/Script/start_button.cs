@@ -9,7 +9,7 @@ public class start_button : MonoBehaviour
     void OnMouseDown(){
         if(!started){
             started = true;
-            every_skill.Turn_start();
+            Turn.Turn_start();
             render = GetComponent<SpriteRenderer>();
             render.sortingLayerName = "Background";
             render.sortingOrder = -1;
