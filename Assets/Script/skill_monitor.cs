@@ -12,7 +12,7 @@ public class skill_monitor : MonoBehaviour
     public int monitor_number;
     public int skill_mode; //-1 is inactive, 0 is pending, 1 is using
     public my_color selected;
-    public every_skill.monoskill used_skill;
+    public monoskill used_skill;
     void Start()
     {
         string objectName = gameObject.name;

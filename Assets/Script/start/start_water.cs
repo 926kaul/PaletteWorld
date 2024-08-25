@@ -10,7 +10,7 @@ public class Water_start : MonoBehaviour
     // Start is called before the first frame update
     void Start(){
         PlayerRender = GetComponent<SpriteRenderer>();
-        PlayerRender.color = new Color32(24,24,216,255);
+        PlayerRender.color = new Color32(56,56,216,255);
         transform.position = new Vector3(11,9,0);
     }
     void Update(){

@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
+using UnityEngine.U2D.IK;
 
 public class y_color : MonoBehaviour
 {
     public SpriteRenderer render;
     public Color color;
     public int H,A,B,C,D,S;
-    public int type;
+    public int type1, type2;
     public int hp;
     public List<Color> skills = new List<Color>();
+    public CC cc;
     // Start is called before the first frame update
     public void Update_stat(){
         color = render.color;
@@ -24,10 +26,16 @@ public class y_color : MonoBehaviour
         B = 15-C;
         D = 15-A;
         S = 15-H;
-        type = every_skill.color_to_type(color);
+        type1 = every_skill.color_to_type(color);
+        type2 = every_skill.get_skill(color).type2;
+        cc = new ncc(this);
     }
-
-    
+    public void use_skill(y_color enemy, monoskill used_skill){
+        if(cc.effect()){
+            used_skill.use_skill(this,enemy);
+        }
+        Turn.Turn_next(this);
+    }
 }
 
 public class my_color : y_color
@@ -110,42 +118,5 @@ public class my_color : y_color
             // write later
         }
     }
-
-    public void use_skill(y_color enemy, every_skill.monoskill used_skill){
-        System.Random rnd = new System.Random();
-
-        int hit_score = (100-used_skill.accuracy)/5 + Mathf.Max(enemy.H-(used_skill.adp?this.A:this.C),0) - ((this.type==used_skill.type)?5:0);
-        int hit_dice = rnd.Next(1,21);
-        if(hit_dice==20||hit_dice!=1||hit_score<=hit_dice){
-            Debug.Log("HIT");
-            int damage_dice = rnd.Next(1,21);
-            if(every_skill.typevs[used_skill.type, enemy.type]!=1){
-                int damage_dice2 = rnd.Next(1,21);
-                if(every_skill.typevs[used_skill.type, enemy.type]==2){
-                    damage_dice = Mathf.Max(damage_dice,damage_dice2);
-                }
-                else{
-                    damage_dice = Mathf.Min(damage_dice,damage_dice2);
-                }
-                Debug.Log($"{damage_dice},{damage_dice2}");
-            }
-            int damage_score = used_skill.damage * Mathf.Max(damage_dice + (used_skill.adp?this.A:this.C) - (used_skill.adp?enemy.B:enemy.D),0) / 100;
-            if(every_skill.typevs[used_skill.type, enemy.type]==0){
-                damage_score = 0;
-            }
-            if(damage_dice==20){
-                damage_score = used_skill.damage * (damage_dice + (used_skill.adp?this.A:this.C)) * 2 /100;
-            }
-            Debug.Log($"{damage_score} damage");
-            enemy.hp -= damage_score;
-            if(enemy.hp <= 0){
-                Destroy(enemy.gameObject);
-            }
-        }
-        else{
-            Debug.Log("MISS");
-        }
-        Turn.Turn_next(this);
-}
 
 }
