@@ -12,7 +12,6 @@ public class skill_monitor : MonoBehaviour
     public int monitor_number;
     public int skill_mode; //-1 is inactive, 0 is pending, 1 is using
     public my_color selected;
-    public monoskill used_skill;
     void Start()
     {
         string objectName = gameObject.name;
@@ -31,7 +30,7 @@ public class skill_monitor : MonoBehaviour
             if (hit.collider != null){
                 enemy_color enemy = hit.collider.GetComponent<enemy_color>();
                 if(enemy != null){
-                    selected.use_skill(enemy,used_skill);
+                    selected.use_skill(enemy,GlobalVariables.selected_skill);
                 }
             }
         }
@@ -39,7 +38,7 @@ public class skill_monitor : MonoBehaviour
 
     void OnMouseDown(){
         if(skill_mode==0){
-            used_skill = every_skill.get_skill(render.color);
+            GlobalVariables.selected_skill = every_skill.get_skill(render.color);
             skill_mode=1;
         }
     }

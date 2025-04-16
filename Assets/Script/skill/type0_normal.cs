@@ -15,7 +15,7 @@ public class type0{
         public skill311() : base(311, "아픔나누기", 0, 100, 0, 13, true){
         }
 
-        public override void use_skill(y_color attacker, y_color defender){
+        public override void calc_skill(y_color attacker, y_color defender){
             System.Random rnd = new System.Random();
 
             int hit_score = (100-this.accuracy)/5 + Mathf.Max(defender.S-attacker.H,0);
@@ -35,7 +35,7 @@ public class type0{
         public skill121() : base(121, "베어가르기", 70, 100, 0, 11, true){
         }
 
-        public override void use_skill(y_color attacker, y_color defender){
+        public override void calc_skill(y_color attacker, y_color defender){
             System.Random rnd = new System.Random();
 
             int hit_score = (100-this.accuracy)/5 + Mathf.Max(defender.S-attacker.H,0);
@@ -74,7 +74,7 @@ public class type0{
         public skill221() : base(221, "자폭", 200, 100, 0, 12, true){
         }
 
-        public override void use_skill(y_color attacker, y_color defender){
+        public override void calc_skill(y_color attacker, y_color defender){
             System.Random rnd = new System.Random();
 
             int hit_score = (100-this.accuracy)/5 + Mathf.Max(defender.S-attacker.H,0);
@@ -114,7 +114,7 @@ public class type0{
         public skill321() : base(321, "대폭발", 250, 100, 0, 8, true){
         }
 
-        public override void use_skill(y_color attacker, y_color defender){
+        public override void calc_skill(y_color attacker, y_color defender){
             System.Random rnd = new System.Random();
 
             int hit_score = (100-this.accuracy)/5 + Mathf.Max(defender.S-attacker.H,0);
@@ -154,7 +154,7 @@ public class type0{
         public skill131() : base(131, "우웩", 0, 100, 0, 3, true){
         }
 
-        public override void use_skill(y_color attacker, y_color defender){
+        public override void calc_skill(y_color attacker, y_color defender){
             System.Random rnd = new System.Random();
             int hit_dice = rnd.Next(1,21);
             if(hit_dice!=1){
@@ -177,7 +177,7 @@ public class type0{
         public skill231() : base(231, "칼춤", 0, 100, 0, 7, true){
         }
 
-        public override void use_skill(y_color attacker, y_color defender){
+        public override void calc_skill(y_color attacker, y_color defender){
             System.Random rnd = new System.Random();
             int hit_dice = rnd.Next(1,21);
             if(hit_dice!=1){
@@ -194,7 +194,7 @@ public class type0{
     public class skill331 : monoskill{
         public skill331() : base(331, "찌릿", 0, 100, 0, 4, true){
         }
-        public override void use_skill(y_color attacker, y_color defender){
+        public override void calc_skill(y_color attacker, y_color defender){
             System.Random rnd = new System.Random();
             int hit_dice = rnd.Next(1,21);
             if(hit_dice!=1){

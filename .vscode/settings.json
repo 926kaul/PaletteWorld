@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Palette_World.sln"
+    "dotnet.defaultSolution": "PaletteWorld.sln"
 }

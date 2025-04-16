@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+
 using Unity.VisualScripting;
 using UnityEngine;
 public class enemy_color : y_color
@@ -12,8 +13,10 @@ public class enemy_color : y_color
         hp = 55 + 3*H;
         Update_skill();
     }
+    
+    bool locked = false;
     void Update(){
-        if(Turn.turn_order.Count > 0 && this == Turn.turn_order[0]){
+        if(!locked && Turn.turn_order.Count > 0 && this == Turn.turn_order[0]){
             System.Random rnd = new System.Random();
             int skill_index = rnd.Next(skills.Count);
 
@@ -27,7 +30,16 @@ public class enemy_color : y_color
                 }
             }
             int target_index = rnd.Next(my_colors.Count);
-            use_skill(my_colors[target_index],every_skill.get_skill(skills[skill_index]));
+
+            locked = true;
+            if (cc.effect()) {
+                StartCoroutine(UseSkillRoutine(my_colors[target_index], every_skill.get_skill(skills[skill_index])));
+                Turn.Turn_next(this);
+            }
+            else {
+                Turn.Turn_next(this);
+            }
+            locked = false;
         }
     }
 

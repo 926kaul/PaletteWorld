@@ -25,4 +25,5 @@ public class GlobalVariables
         {5,3.50f},
         {6,4.00f}
     };
+    public static monoskill selected_skill = new monoskill(0, "없음", 0, 0, 0, 0, true);
 }

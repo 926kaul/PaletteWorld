@@ -31,11 +31,19 @@ public class y_color : MonoBehaviour
         cc = new ncc(this);
     }
     public void use_skill(y_color enemy, monoskill used_skill){
-        if(cc.effect()){
-            used_skill.use_skill(this,enemy);
+        if (cc.effect()) {
+            StartCoroutine(UseSkillRoutine(enemy, used_skill));
         }
+        else {
+            Turn.Turn_next(this);
+        }
+    }
+    public IEnumerator UseSkillRoutine(y_color enemy, monoskill used_skill)
+    {
+        yield return used_skill.use_skill(this, enemy);
         Turn.Turn_next(this);
     }
+
 }
 
 public class my_color : y_color

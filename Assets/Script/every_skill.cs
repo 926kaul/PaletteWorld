@@ -25,12 +25,21 @@ public class monoskill{
         phy = Phy;
     }
 
-    public virtual void use_skill(y_color attacker, y_color defender){
+    public virtual IEnumerator use_skill(y_color attacker, y_color defender){
+        yield return this.skill_effect(attacker, defender);
+        this.calc_skill(attacker, defender);
+    }
+
+    public virtual IEnumerator skill_effect(y_color attacker, y_color defender){
+        yield break;
+    }
+
+    public virtual void calc_skill(y_color attacker, y_color defender){
         System.Random rnd = new System.Random();
 
         int hit_score = (100-this.accuracy)/5 + Mathf.Max(defender.S-attacker.H,0);
         int hit_dice = rnd.Next(1,21);
-        if(hit_dice==20||hit_dice!=1||hit_score<=hit_dice){
+        if(hit_dice==20||(hit_dice!=1&&(hit_score<=hit_dice))){
             Debug.Log("HIT");
             int damage_dice = rnd.Next(1,21);
             if(this.type1==attacker.type1 || this.type1==attacker.type2){
@@ -58,6 +67,10 @@ public class monoskill{
             Debug.Log($"{this.name} MISS");
         }
     }
+
+
+
+
 }
 
 public class every_skill : MonoBehaviour{
