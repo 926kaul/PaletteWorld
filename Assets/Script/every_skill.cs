@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Reflection;
 using System;
 using UnityEditor;
+using Unity.Burst.CompilerServices;
 
 
 
@@ -28,6 +29,7 @@ public class monoskill{
 
     System.Random rnd = new System.Random();
     public virtual IEnumerator use_skill(y_color attacker, y_color defender){
+
         int hit_score = (100-this.accuracy)/5 + Math.Max(defender.S-attacker.H,0);
         int hit_dice = rnd.Next(1,21);
         if (diceUI == null)
@@ -35,7 +37,8 @@ public class monoskill{
         yield return diceUI.StartCoroutine(diceUI.Roll(hit_dice, hit_score));
 
         yield return this.skill_effect(attacker, defender);
-        this.calc_skill(attacker, defender, hit_dice, hit_score);
+        (bool hit, int damage_score) = this.calc_skill(attacker, defender, hit_dice, hit_score);
+        yield return defender.damaged(hit, damage_score);
     }
 
     public virtual IEnumerator skill_effect(y_color attacker, y_color defender){
@@ -43,7 +46,7 @@ public class monoskill{
     }
 
     public diceRollUI diceUI;
-    public virtual void calc_skill(y_color attacker, y_color defender,int hit_dice, int hit_score){
+    public virtual (bool,int) calc_skill(y_color attacker, y_color defender,int hit_dice, int hit_score){
         if(hit_dice==20||(hit_dice!=1&&(hit_score<=hit_dice))){
             Debug.Log("HIT");
             int damage_dice = rnd.Next(1,21);
@@ -67,9 +70,11 @@ public class monoskill{
             if(defender.hp <= 0){
                 UnityEngine.Object.Destroy(defender.gameObject);
             }
+            return (true, damage_score);
         }
         else{
             Debug.Log($"{this.name} MISS");
+            return (false, 0);
         }
     }
 

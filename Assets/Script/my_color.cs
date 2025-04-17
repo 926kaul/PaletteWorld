@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.U2D.IK;
+using TMPro;
 
 public class y_color : MonoBehaviour
 {
@@ -41,6 +42,38 @@ public class y_color : MonoBehaviour
         yield return used_skill.use_skill(this, enemy);
     }
 
+    private static GameObject damageTextPrefab;
+    public virtual IEnumerator damaged(bool hit, int damage_score){
+        if (damageTextPrefab == null)
+            damageTextPrefab = Resources.Load<GameObject>("Prefab/damage_score");
+        // 1. 텍스트 생성
+        GameObject dmgTextObj = Instantiate(damageTextPrefab, transform.position + new Vector3(0, 1.2f, 0), Quaternion.identity);
+
+        // 2. 텍스트 내용 설정
+        TextMeshPro text = dmgTextObj.GetComponent<TextMeshPro>();
+        if (hit)
+            text.text = damage_score.ToString();
+        else
+            text.text = "MISS";
+
+        // 3. 색상 defender의 색으로 설정
+        text.color = this.color;
+
+        // 4. 살짝 떠오르고 사라지기
+        float duration = 1.0f;
+        Vector3 startPos = dmgTextObj.transform.position;
+        Vector3 endPos = startPos + new Vector3(0, 0.5f, 0);
+
+        float elapsed = 0;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            dmgTextObj.transform.position = Vector3.Lerp(startPos, endPos, elapsed / duration);
+            yield return null;
+        }
+
+        Destroy(dmgTextObj);
+    }
 }
 
 public class my_color : y_color
