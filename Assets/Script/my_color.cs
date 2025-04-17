@@ -14,6 +14,7 @@ public class y_color : MonoBehaviour
     public int hp;
     public List<Color> skills = new List<Color>();
     public CC cc;
+    public bool skill_locked = false;
     // Start is called before the first frame update
     public void Update_stat(){
         color = render.color;
@@ -34,14 +35,10 @@ public class y_color : MonoBehaviour
         if (cc.effect()) {
             StartCoroutine(UseSkillRoutine(enemy, used_skill));
         }
-        else {
-            Turn.Turn_next(this);
-        }
     }
     public IEnumerator UseSkillRoutine(y_color enemy, monoskill used_skill)
     {
         yield return used_skill.use_skill(this, enemy);
-        Turn.Turn_next(this);
     }
 
 }
@@ -64,14 +61,17 @@ public class my_color : y_color
     void Update(){
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-                for(int i=0; i<4; i++){
-                    SpriteRenderer render = GlobalVariables.skill_monitors[i].render;
-                    render.color = new Color(255,255,255,255);
-                    render.sortingLayerName = "Background";
-                    render.sortingOrder = 0;
-                    GlobalVariables.skill_monitors[i].selected = null;
-                    GlobalVariables.skill_monitors[i].skill_mode = -1;
-                }
+            for(int i=0; i<4; i++){
+                SpriteRenderer render = GlobalVariables.skill_monitors[i].render;
+                render.color = new Color(255,255,255,255);
+                render.sortingLayerName = "Background";
+                render.sortingOrder = 0;
+                GlobalVariables.skill_monitors[i].selected = null;
+                GlobalVariables.skill_monitors[i].skill_mode = -1;
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            TryEndTurn();
         }
     }
     void OnMouseDown(){
@@ -124,6 +124,12 @@ public class my_color : y_color
         }
         else{
             // write later
+        }
+    }
+
+    public void TryEndTurn() {
+        if (Turn.turn_order.Count > 0 && Turn.turn_order[0] == this) {
+            Turn.Turn_next(this);
         }
     }
 

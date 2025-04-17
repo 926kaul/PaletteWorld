@@ -13,35 +13,40 @@ public class enemy_color : y_color
         hp = 55 + 3*H;
         Update_skill();
     }
-    
-    bool locked = false;
-    void Update(){
-        if(!locked && Turn.turn_order.Count > 0 && this == Turn.turn_order[0]){
-            System.Random rnd = new System.Random();
-            int skill_index = rnd.Next(skills.Count);
 
-            Collider2D[] hitColliders = Physics2D.OverlapAreaAll(new Vector2(0,0), new Vector2(18,18), LayerMask.GetMask("Default"));
-            List<my_color> my_colors = new List<my_color>();
-            foreach (Collider2D collider in hitColliders)
-            {
-                if (collider.GetComponent<my_color>() != null)
-                {
-                    my_colors.Add(collider.GetComponent<my_color>());
-                }
-            }
-            int target_index = rnd.Next(my_colors.Count);
-
-            locked = true;
-            if (cc.effect()) {
-                StartCoroutine(UseSkillRoutine(my_colors[target_index], every_skill.get_skill(skills[skill_index])));
-                Turn.Turn_next(this);
-            }
-            else {
-                Turn.Turn_next(this);
-            }
-            locked = false;
+    void Update() {
+        if (Turn.turn_order.Count > 0 && this == Turn.turn_order[0] && !skill_locked) {
+            skill_locked = true;
+            StartCoroutine(EnemyTurnRoutine());
         }
     }
+
+    IEnumerator EnemyTurnRoutine() {
+        yield return new WaitForSeconds(0.5f);  // 턴 시작 딜레이 추가
+
+        System.Random rnd = new System.Random();
+        int skill_index = rnd.Next(skills.Count); //enemy가 가진 스킬 중 하나 랜덤으로 선택
+
+        Collider2D[] hitColliders = Physics2D.OverlapAreaAll(new Vector2(0, 0), new Vector2(18, 18), LayerMask.GetMask("Default"));
+        List<my_color> my_colors = new List<my_color>();
+        foreach (Collider2D collider in hitColliders) {
+            if (collider.GetComponent<my_color>() != null) {
+                my_colors.Add(collider.GetComponent<my_color>());
+            }
+        }
+
+        if (my_colors.Count > 0) {
+            int target_index = rnd.Next(my_colors.Count); //enemy가 공격할 my color 랜덤으로 선택
+
+            if (cc.effect()) {
+                yield return StartCoroutine(UseSkillRoutine(my_colors[target_index], every_skill.get_skill(skills[skill_index])));
+            }
+
+            Turn.Turn_next(this);
+        }
+
+    }
+
 
 
     void Update_skill(){
