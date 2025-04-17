@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using System.Reflection;
 using System;
+using UnityEditor;
 
 
 
@@ -25,20 +26,24 @@ public class monoskill{
         phy = Phy;
     }
 
+    System.Random rnd = new System.Random();
     public virtual IEnumerator use_skill(y_color attacker, y_color defender){
+        int hit_score = (100-this.accuracy)/5 + Math.Max(defender.S-attacker.H,0);
+        int hit_dice = rnd.Next(1,21);
+        if (diceUI == null)
+            diceUI = GameObject.FindObjectOfType<diceRollUI>();
+        yield return diceUI.StartCoroutine(diceUI.Roll(hit_dice, hit_score));
+
         yield return this.skill_effect(attacker, defender);
-        this.calc_skill(attacker, defender);
+        this.calc_skill(attacker, defender, hit_dice, hit_score);
     }
 
     public virtual IEnumerator skill_effect(y_color attacker, y_color defender){
         yield break;
     }
 
-    public virtual void calc_skill(y_color attacker, y_color defender){
-        System.Random rnd = new System.Random();
-
-        int hit_score = (100-this.accuracy)/5 + Mathf.Max(defender.S-attacker.H,0);
-        int hit_dice = rnd.Next(1,21);
+    public diceRollUI diceUI;
+    public virtual void calc_skill(y_color attacker, y_color defender,int hit_dice, int hit_score){
         if(hit_dice==20||(hit_dice!=1&&(hit_score<=hit_dice))){
             Debug.Log("HIT");
             int damage_dice = rnd.Next(1,21);
