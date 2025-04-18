@@ -10,12 +10,14 @@ public class CC{
         victim.Update_stat();
         return true;
     }
+    public Color cc_color;
 }
 
 public class ncc : CC{
     public ncc(y_color Victim){
         victim = Victim;
     }
+    public new Color cc_color = new Color(0,0,0,255);
 }
 public class psn : CC{
     public psn(y_color Victim){
@@ -28,6 +30,7 @@ public class psn : CC{
         }
         return true;
     }
+    public new Color cc_color = new Color(128,256,0,255);
 }
 public class ppsn : CC{
     int turn_point;
@@ -43,6 +46,7 @@ public class ppsn : CC{
         }
         return true;
     }
+    public new Color cc_color = new Color(128,0,128,255);
 }
 public class brn : CC{
     public brn(y_color Victim){
@@ -56,6 +60,7 @@ public class brn : CC{
         }
         return true;
     }
+    public new Color cc_color = new Color(255,0,0,255);
 }
 public class par : CC{
     public par(y_color Victim){
@@ -68,6 +73,7 @@ public class par : CC{
         if(dice < 7) return false;
         return true;
     }
+    public new Color cc_color = new Color(255,255,0,255);
 }
 public class slp : CC{
     int turn_point;
@@ -80,6 +86,7 @@ public class slp : CC{
         if(turn_point<3) return false;
         return true;
     }
+    public new Color cc_color = new Color(128,128,128,255);
 }
 public class frz : CC{
     public frz(y_color Victim){
@@ -93,6 +100,7 @@ public class frz : CC{
         }
         return true;
     }
+    public new Color cc_color = new Color(0,255,255,255);
 }
 public class rbd: CC{
     int turn_point;
@@ -108,4 +116,5 @@ public class rbd: CC{
         victim.cc = new ncc(victim);
         return true;
     }
+    public new Color cc_color = new Color(0,0,128,255);
 }

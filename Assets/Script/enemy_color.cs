@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-
+using System.Transactions;
 using Unity.VisualScripting;
 using UnityEngine;
 public class enemy_color : y_color
@@ -12,12 +12,18 @@ public class enemy_color : y_color
         Update_stat();
         hp = 55 + 3*H;
         Update_skill();
+        start_button = GetComponent<start_button>();
     }
 
+    public start_button start_button;
     void Update() {
-        if (Turn.turn_order.Count > 0 && this == Turn.turn_order[0] && !skill_locked) {
+        if (start_button.started && Turn.turn_order.Count > 0 && this == Turn.turn_order[0] && !skill_locked) {
             skill_locked = true;
             StartCoroutine(EnemyTurnRoutine());
+        }
+        if(this.transform.position.x < 0 || this.transform.position.x > 18 || this.transform.position.y < 0 || this.transform.position.y > 18){
+            UnityEngine.Object.Destroy(this.gameObject);
+            GameObject.FindObjectOfType<TurnUI>()?.UpdateTurnDisplay();
         }
     }
 

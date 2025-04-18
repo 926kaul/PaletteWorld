@@ -13,9 +13,12 @@ public class diceRollUI : MonoBehaviour
 
     public float flashDuration = 0.5f;
     public float flashSpeed = 0.05f;
+    public bool isRolling = false;
 
     public IEnumerator Roll(int result, int hitScore)
     {   
+        isRolling = true;
+        Monitor.instance?.Clear();
         diceRenderer.enabled = true;
 
         if (hitScoreText != null)
@@ -40,5 +43,6 @@ public class diceRollUI : MonoBehaviour
         diceRenderer.enabled = false;
         if (hitScoreText != null)
             hitScoreText.gameObject.SetActive(false);
+        isRolling = false;
     }
 }

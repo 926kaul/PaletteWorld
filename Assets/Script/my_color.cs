@@ -16,7 +16,8 @@ public class y_color : MonoBehaviour
     public List<Color> skills = new List<Color>();
     public CC cc;
     public bool skill_locked = false;
-    // Start is called before the first frame update
+    public int distance;
+
     public void Update_stat(){
         color = render.color;
         int Red = Mathf.RoundToInt(color.r * 255);
@@ -73,6 +74,18 @@ public class y_color : MonoBehaviour
         }
 
         Destroy(dmgTextObj);
+        GameObject.FindObjectOfType<TurnUI>()?.UpdateTurnDisplay();
+
+    }
+
+    void OnMouseEnter()
+    {
+        Monitor.instance?.ShowStatus(this);
+    }
+
+    void OnMouseExit()
+    {
+        Monitor.instance?.Clear();
     }
 }
 
@@ -99,12 +112,16 @@ public class my_color : y_color
                 render.color = new Color(255,255,255,255);
                 render.sortingLayerName = "Background";
                 render.sortingOrder = 0;
-                GlobalVariables.skill_monitors[i].selected = null;
-                GlobalVariables.skill_monitors[i].skill_mode = -1;
             }
+            GlobalVariables.selected_skill = null;
+            GlobalVariables.selected_color = null;
         }
         if (Input.GetKeyDown(KeyCode.Space)) {
             TryEndTurn();
+        }
+        if(stage_set==1&&(this.transform.position.x < 0 || this.transform.position.x > 18 || this.transform.position.y < 0 || this.transform.position.y > 18)){
+            UnityEngine.Object.Destroy(this.gameObject);
+            GameObject.FindObjectOfType<TurnUI>()?.UpdateTurnDisplay();
         }
     }
     void OnMouseDown(){
@@ -116,14 +133,13 @@ public class my_color : y_color
             isDragging = true;
         }
         if(stage_set==1){
+            GlobalVariables.selected_color = this;
             for(int i=0; i<4; i++){
                 if(skills.Count > i){
                     SpriteRenderer render = GlobalVariables.skill_monitors[i].render;
                     render.color = skills[i];
                     render.sortingLayerName = "Default";
                     render.sortingOrder = 2;
-                    GlobalVariables.skill_monitors[i].skill_mode = 0;
-                    GlobalVariables.skill_monitors[i].selected = this;
                 }
             }
         }
