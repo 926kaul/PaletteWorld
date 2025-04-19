@@ -32,9 +32,13 @@ public class Turn{
         }
         turn_order.Sort(comparing);
         GameObject.FindObjectOfType<TurnUI>()?.UpdateTurnDisplay();
+        if (turn_order.Count > 0) {
+            SetTransparency(turn_order[0], 0.5f); // 반투명
+        }
         return ans;
     }
     public static void Turn_next(y_color done_color){
+        SetTransparency(done_color, 1.0f);
         turn_order.Remove(done_color);
         turn_order.RemoveAll(item => item == null); //공격을 맞고 destory된 것을 제거
         if(turn_order.Count==0){
@@ -42,6 +46,7 @@ public class Turn{
         }
         else{
             turn_order.Sort(comparing);
+            SetTransparency(turn_order[0], 0.5f);
         }
         GameObject.FindObjectOfType<TurnUI>()?.UpdateTurnDisplay();
 
@@ -54,6 +59,15 @@ public class Turn{
             return random.Next(-1, 2);
         }
         return comparison;
+    }
+    private static void SetTransparency(y_color target, float alpha)
+    {
+        if (target != null && target.render != null)
+        {
+            Color c = target.render.color;
+            c.a = alpha;
+            target.render.color = c;
+        }
     }
 }
 

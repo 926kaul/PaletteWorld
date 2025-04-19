@@ -17,8 +17,6 @@ public class start_button : MonoBehaviour
             mainText.text = $"Move<size=40>({GlobalVariables.selected_color.distance})</size>";
         else
             mainText.text = "";
-
-        if(Input.GetMouseButtonDown(0) && started && (GlobalVariables.selected_skill is move)&& selected == Turn.turn_order[0]){}
     }
     void OnMouseDown(){
         selected = GlobalVariables.selected_color;

@@ -9,7 +9,7 @@ using TMPro;
 public class y_color : MonoBehaviour
 {
     public SpriteRenderer render;
-    public Color color;
+    public Color32 color;
     public int H,A,B,C,D,S;
     public int type1, type2;
     public int hp;
@@ -19,7 +19,9 @@ public class y_color : MonoBehaviour
     public int distance;
 
     public void Update_stat(){
-        color = render.color;
+        if (render == null)
+            render = GetComponent<SpriteRenderer>();
+        render.color = color;
         int Red = Mathf.RoundToInt(color.r * 255);
         int Green = Mathf.RoundToInt(color.g * 255);
         int Blue = Mathf.RoundToInt(color.b * 255);
@@ -30,6 +32,8 @@ public class y_color : MonoBehaviour
         D = 15-A;
         S = 15-H;
         type1 = every_skill.color_to_type(color);
+        if(type1 == 25)
+            Destroy(this.gameObject);
         type2 = every_skill.get_skill(color).type2;
         cc = new ncc(this);
     }
@@ -75,7 +79,6 @@ public class y_color : MonoBehaviour
 
         Destroy(dmgTextObj);
         GameObject.FindObjectOfType<TurnUI>()?.UpdateTurnDisplay();
-
     }
 
     void OnMouseEnter()
@@ -112,6 +115,7 @@ public class my_color : y_color
                 render.color = new Color(255,255,255,255);
                 render.sortingLayerName = "Background";
                 render.sortingOrder = 0;
+                GlobalVariables.skill_monitors[i].mainText.text = "";
             }
             GlobalVariables.selected_skill = null;
             GlobalVariables.selected_color = null;
@@ -140,6 +144,7 @@ public class my_color : y_color
                     render.color = skills[i];
                     render.sortingLayerName = "Default";
                     render.sortingOrder = 2;
+                    GlobalVariables.skill_monitors[i].mainText.text = every_skill.get_skill(skills[i]).name;
                 }
             }
         }
@@ -154,26 +159,58 @@ public class my_color : y_color
     void OnMouseUp()
     {
         isDragging = false;
-        if(stage_set==0){
-            if((transform.position.x>=0)&&(transform.position.x<=18)&&(transform.position.y>=0)&&(transform.position.y<=9)){
+        if (stage_set == 0)
+        {
+            Vector3 pos = transform.position;
+            // 위치가 stage 내부이고
+            if ((pos.x >= 0) && (pos.x <= 18) && (pos.y >= 0) && (pos.y <= 9))
+            {
+                // 현재 스테이지 위 my_color 수 세기
+                Collider2D[] hits = Physics2D.OverlapAreaAll(new Vector2(0, 0), new Vector2(18, 9), LayerMask.GetMask("Default"));
+                int count = 0;
+                foreach (var col in hits)
+                {
+                    my_color mc = col.GetComponent<my_color>();
+                    if (mc != null && mc.stage_set == 1 && mc != this)
+                        count++;
+                }
+                // 3개 초과면 안 됨
+                if (count >= 3)
+                {
+                    transform.position = original_position; // 되돌리기
+                    return;
+                }
+                // 통과 시 stage에 올리기
                 stage_set = 1;
-                transform.position = new Vector3(Mathf.Round(transform.position.x), Mathf.Round(transform.position.y), Mathf.Round(transform.position.z));
+                transform.position = new Vector3(Mathf.Round(pos.x), Mathf.Round(pos.y), Mathf.Round(pos.z));
             }
-            else{
+            else
+            {
+                // stage 아닌 곳이면 되돌리기
                 transform.position = original_position;
             }
         }
     }
 
-    void Update_skill(){
+    public void Update_skill(){
         color = render.color;
-        float[] skill_color = {Mathf.Round(color.r * 255/64)/4, Mathf.Round(color.g * 255/64)/4, Mathf.Round(color.b * 255/64)/4};
+        byte[] skill_color = {CustomSkillIndex(color.r), CustomSkillIndex(color.g), CustomSkillIndex(color.b)};
         if(skills.Count <= GlobalVariables.fibo[level]){
-            skills.Add(new Color(skill_color[0],skill_color[1],skill_color[2],255));
+            skills.Add(new Color32(skill_color[0],skill_color[1],skill_color[2],255));
         }
         else{
             // write later
         }
+    }
+    public static byte CustomSkillIndex(byte value)
+    {
+        if (value <= 31) return 0;
+        else if (value <= 63) return 63;
+        else if (value <= 95) return 64;
+        else if (value <= 159) return 128;
+        else if (value <= 191) return 191;
+        else if (value <= 223) return 192;
+        else return 255;
     }
 
     public void TryEndTurn() {

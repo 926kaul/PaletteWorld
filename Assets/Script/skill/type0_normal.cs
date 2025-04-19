@@ -223,7 +223,7 @@ public class type0{
 
 
     public class skill222 : monoskill{
-        public skill222() : base(222, "몸통박치기", 40, 100, 0, 26, true){
+        public skill222() : base(222, "몸통박치기", 40, 100, 0, 26, true, 1){
         }
     }
 }

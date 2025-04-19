@@ -7,6 +7,7 @@ using System;
 using UnityEditor;
 using Unity.Burst.CompilerServices;
 using UnityEditor.UI;
+using UnityEngine.Rendering.Universal.Internal;
 
 public class InTurn{}
 
@@ -18,7 +19,8 @@ public class monoskill : InTurn{
     public int type1;
     public int type2;
     public bool phy;
-    public monoskill(int Code, string Name, int Damage, int Accuracy, int Type1, int Type2, bool Phy){
+    public int efrange;
+    public monoskill(int Code, string Name, int Damage, int Accuracy, int Type1, int Type2, bool Phy, int Efrange = 100){
         code = Code;
         name = Name;
         damage = Damage;
@@ -26,6 +28,7 @@ public class monoskill : InTurn{
         type1 = Type1;
         type2 = Type2;
         phy = Phy;
+        efrange = Efrange;
     }
 
     System.Random rnd = new System.Random();
@@ -40,6 +43,11 @@ public class monoskill : InTurn{
         yield return this.skill_effect(attacker, defender);
         (bool hit, int damage_score) = this.calc_skill(attacker, defender, hit_dice, hit_score);
         yield return defender.damaged(hit, damage_score);
+    }
+
+    public virtual bool skill_availablity(y_color attacker, y_color defender){
+        float dist = Vector3.Distance(attacker.transform.position, defender.transform.position);
+        return dist <= this.efrange;
     }
 
     public virtual IEnumerator skill_effect(y_color attacker, y_color defender){
@@ -154,7 +162,7 @@ public class every_skill : MonoBehaviour{
         skillset[2,1,1,3] = new type2.skill113();
         skillset[3,1,3,1] = new type3.skill131();
 
-        skillset[0,1,1,1] = new type0.skill111();
+        /*skillset[0,1,1,1] = new type0.skill111();
         skillset[0,2,1,1] = new type0.skill211();
         skillset[0,3,1,1] = new type0.skill311();
         skillset[0,1,2,1] = new type0.skill121();
@@ -162,7 +170,9 @@ public class every_skill : MonoBehaviour{
         skillset[0,3,2,1] = new type0.skill231();
         skillset[0,1,3,1] = new type0.skill131();
         skillset[0,2,3,1] = new type0.skill231();
-        skillset[0,3,3,1] = new type0.skill331();
+        skillset[0,3,3,1] = new type0.skill331();*/
+
+
 
     }
 
@@ -174,7 +184,7 @@ public class every_skill : MonoBehaviour{
                 RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
                 if (hit.collider != null){
                     enemy_color enemy = hit.collider.GetComponent<enemy_color>();
-                    if(enemy != null){
+                    if(enemy != null && ((monoskill)GlobalVariables.selected_skill).skill_availablity(selected, enemy)){
                         selected.skill_locked = true;
                         selected.use_skill(enemy,(monoskill)GlobalVariables.selected_skill);
                     }
@@ -187,10 +197,18 @@ public class every_skill : MonoBehaviour{
                 if(mouseWorldPos.x < 0 || mouseWorldPos.x > 18 || mouseWorldPos.y < 0 || mouseWorldPos.y > 18){
                     return;
                 }
-                Collider2D hit = Physics2D.OverlapPoint(mouseWorldPos, LayerMask.GetMask("Default"));
-                if (hit != null && hit.GetComponent<y_color>() != null)
-                    return;
-                
+                bool blocked = false;
+                Collider2D[] colliders = Physics2D.OverlapCircleAll(mouseWorldPos, 0.3f, LayerMask.GetMask("Default"));
+                foreach (Collider2D c in colliders)
+                {
+                    if (c.GetComponent<y_color>() != null && c.gameObject != selected.gameObject)
+                    {
+                        blocked = true;
+                        break;
+                    }
+                }
+                if(blocked) return;
+
                 float dist = Vector2.Distance(selected.transform.position, mouseWorldPos);
 
                 if (selected.distance >= dist)
@@ -201,6 +219,17 @@ public class every_skill : MonoBehaviour{
                 else
                 {
                     Debug.Log("too far to move");
+                }
+            }
+            else if (GlobalVariables.selected_skill is ball && !selected.skill_locked)
+            {
+                RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+                if (hit.collider != null){
+                    enemy_color enemy = hit.collider.GetComponent<enemy_color>();
+                    if(enemy != null){
+                        selected.skill_locked = true;
+                        StartCoroutine(((ball)GlobalVariables.selected_skill).use_ball(selected, enemy));
+                    }
                 }
             }
         }
@@ -224,47 +253,66 @@ public class every_skill : MonoBehaviour{
             {4, 21, 25}
         }
     };
-    public static int color_to_type(Color color){
-        int[] skill_color = {Mathf.RoundToInt(color.r * 2), Mathf.RoundToInt(color.g * 2), Mathf.RoundToInt(color.b * 2)};
+    public static int color_to_type(Color32 color){
+        int[] skill_color = {CustomTypeIndex(color.r), CustomTypeIndex(color.g), CustomTypeIndex(color.b)};
         return color_and_types[skill_color[0],skill_color[1],skill_color[2]];
+    }
+    public static int CustomTypeIndex(byte value)
+    {
+        if (value <= 63) return 0;
+        else if (value <= 191) return 1;
+        else return 2;
     }
 
     public static monoskill[,,,] skillset = new monoskill[20,5,5,5];
-    public static monoskill get_skill(Color color){
-        int[] skill_color = {Mathf.RoundToInt(color.r * 255/64), Mathf.RoundToInt(color.g * 255/64), Mathf.RoundToInt(color.b * 255/64)};
+    public static monoskill[] normalskill = new monoskill[25];
+    public static monoskill get_skill(Color32 color){
+        int[] skill_color = {CustomSkillIndex(color.r), CustomSkillIndex(color.g),CustomSkillIndex(color.b)};
         int type1 = color_to_type(color);
-        return skillset[type1, skill_color[0],skill_color[1],skill_color[2]];
+        monoskill tmp = skillset[type1, skill_color[0],skill_color[1],skill_color[2]];
+        if(tmp == null){
+            tmp = normalskill[type1];
+        }
+        return tmp;
+    }
+    public static int CustomSkillIndex(byte value)
+    {
+        if (value <= 31) return 0;
+        else if (value <= 95) return 1;
+        else if (value <= 159) return 2;
+        else if (value <= 223) return 3;
+        else return 4;
     }
 
     public static (Color,string)[] type_code = new (Color,string)[27]
     {   
-        (new Color(255,255,255,255),"Normal"), // 0
-        (new Color(255,0,0,255),"Fire"), // 1
-        (new Color(0,0,255,255),"Water"), // 2
-        (new Color(0,255,0,255),"Grass"), // 3
-        (new Color(255,255,0,255),"Electric"), // 4
-        (new Color(0,255,255,255),"Ice"), // 5
-        (new Color(255,0,255,255),"Fighting"), // 6
-        (new Color(255,128,0,255),"Poison"), // 7
-        (new Color(255,128,128,255),"Ground"), //8
-        (new Color(0,128,255,255),"Flying"), // 9
-        (new Color(128,0,255,255),"Psychic"), // 10
-        (new Color(0,128,0,255),"Insect"), // 11
-        (new Color(128,128,0,255),"Rock"), // 12
-        (new Color(128,0,128,255),"Ghost"), // 13
-        (new Color(0,0,128,255),"Dragon"), // 14
-        (new Color(128,0,255),"Dark"), // 15
-        (new Color(0,128,128,255),"Steel"), // 16
-        (new Color(255,0,128,255),"Fairy"), // 17
-        (new Color(255,128,128,255),"Fire"), // 18
-        (new Color(128,128,255,255),"Water"), // 19
-        (new Color(128,255,128,255),"Grass"), // 20
-        (new Color(255,255,128,255),"Electric"), // 21
-        (new Color(128,255,255,255),"Ice"), // 22
-        (new Color(255,128,255,255),"Fairy"), // 23
-        (new Color(0,255,128,255),"Psychic"), // 24
-        (new Color(0,0,0,255),"BW"), // 25
-        (new Color(255,255,255),"None"), // 26
+        (new Color32(255,255,255,255),"Normal"), // 0
+        (new Color32(255,0,0,255),"Fire"), // 1
+        (new Color32(0,0,255,255),"Water"), // 2
+        (new Color32(0,255,0,255),"Grass"), // 3
+        (new Color32(255,255,0,255),"Electric"), // 4
+        (new Color32(0,255,255,255),"Ice"), // 5
+        (new Color32(255,0,255,255),"Fighting"), // 6
+        (new Color32(255,128,0,255),"Poison"), // 7
+        (new Color32(255,128,128,255),"Ground"), //8
+        (new Color32(0,128,255,255),"Flying"), // 9
+        (new Color32(128,0,255,255),"Psychic"), // 10
+        (new Color32(0,128,0,255),"Insect"), // 11
+        (new Color32(128,128,0,255),"Rock"), // 12
+        (new Color32(128,0,128,255),"Ghost"), // 13
+        (new Color32(0,0,128,255),"Dragon"), // 14
+        (new Color32(128,0,255,255),"Dark"), // 15
+        (new Color32(0,128,128,255),"Steel"), // 16
+        (new Color32(255,0,128,255),"Fairy"), // 17
+        (new Color32(255,128,128,255),"Fire"), // 18
+        (new Color32(128,128,255,255),"Water"), // 19
+        (new Color32(128,255,128,255),"Grass"), // 20
+        (new Color32(255,255,128,255),"Electric"), // 21
+        (new Color32(128,255,255,255),"Ice"), // 22
+        (new Color32(255,128,255,255),"Fairy"), // 23
+        (new Color32(0,255,128,255),"Psychic"), // 24
+        (new Color32(0,0,0,255),"BW"), // 25
+        (new Color32(255,255,255,255),"None"), // 26
     };
 }
 

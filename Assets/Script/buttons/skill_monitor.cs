@@ -4,12 +4,14 @@ using UnityEngine;
 using System.Text.RegularExpressions;
 using UnityEngine.Rendering;
 using System;
+using TMPro;
 
 public class skill_monitor : MonoBehaviour
 {
     // Start is called before the first frame update
     public SpriteRenderer render;
     public int monitor_number;
+    public TextMeshPro mainText;
     void Start()
     {
         string objectName = gameObject.name;

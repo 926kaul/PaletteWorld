@@ -27,4 +27,5 @@ public class GlobalVariables
     };
     public static InTurn selected_skill;
     public static my_color selected_color;
+    public static int[] ball_count = {0,0,0,0};
 }
