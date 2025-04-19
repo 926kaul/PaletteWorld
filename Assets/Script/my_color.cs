@@ -32,8 +32,10 @@ public class y_color : MonoBehaviour
         D = 15-A;
         S = 15-H;
         type1 = every_skill.color_to_type(color);
-        if(type1 == 25)
+        if(type1 == 25){
+            Turn.Turn_next(this);
             Destroy(this.gameObject);
+        }
         type2 = every_skill.get_skill(color).type2;
         cc = new ncc(this);
     }
@@ -145,6 +147,13 @@ public class my_color : y_color
                     render.sortingLayerName = "Default";
                     render.sortingOrder = 2;
                     GlobalVariables.skill_monitors[i].mainText.text = every_skill.get_skill(skills[i]).name;
+                }
+                else{
+                    SpriteRenderer render = GlobalVariables.skill_monitors[i].render;
+                    render.color = new Color(255,255,255,255);
+                    render.sortingLayerName = "Background";
+                    render.sortingOrder = 0;
+                    GlobalVariables.skill_monitors[i].mainText.text = "";
                 }
             }
         }

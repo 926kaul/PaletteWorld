@@ -102,10 +102,10 @@ public class ball: InTurn{
                 break;
             case 1:
                 // 가산혼합: 각 성분별 최대값 선택
-                attacker.color = new Color(
-                    Mathf.Max(attacker.color.r, defender.color.r),
-                    Mathf.Max(attacker.color.g, defender.color.g),
-                    Mathf.Max(attacker.color.b, defender.color.b),
+                attacker.color = new Color32(
+                    (byte)Mathf.Max(attacker.color.r, defender.color.r),
+                    (byte)Mathf.Max(attacker.color.g, defender.color.g),
+                    (byte)Mathf.Max(attacker.color.b, defender.color.b),
                     255
                 );
                 attacker.render.color = attacker.color;
@@ -115,10 +115,10 @@ public class ball: InTurn{
 
             case 2:
                 // 감산혼합: 각 성분별 최소값 선택
-                attacker.color = new Color(
-                    Mathf.Min(attacker.color.r, defender.color.r),
-                    Mathf.Min(attacker.color.g, defender.color.g),
-                    Mathf.Min(attacker.color.b, defender.color.b),
+                attacker.color = new Color32(
+                    (byte)Mathf.Min(attacker.color.r, defender.color.r),
+                    (byte)Mathf.Min(attacker.color.g, defender.color.g),
+                    (byte)Mathf.Min(attacker.color.b, defender.color.b),
                     255
                 );
                 attacker.render.color = attacker.color;
@@ -128,10 +128,10 @@ public class ball: InTurn{
 
             case 3:
                 // 중간혼합: (attacker + defender) / 2
-                attacker.color = new Color(
-                    (attacker.color.r+ defender.color.r)/2,
-                    (attacker.color.g+ defender.color.g)/2,
-                    (attacker.color.b+ defender.color.b)/2,
+                attacker.color = new Color32(
+                    (byte)((attacker.color.r+ defender.color.r)/2),
+                    (byte)((attacker.color.g+ defender.color.g)/2),
+                    (byte)((attacker.color.b+ defender.color.b)/2),
                     255
                 );
                 attacker.render.color = attacker.color;
@@ -142,6 +142,7 @@ public class ball: InTurn{
         Debug.Log("attacker color: " + attacker.color);
         Debug.Log("attacker level: " + ((my_color)attacker).level);
         attacker.Update_stat();
+        attacker.hp = 55 + 3*attacker.H;
         ((my_color)attacker).Update_skill();
     }
 }

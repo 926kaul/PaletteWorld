@@ -23,9 +23,9 @@ public class Fire_start : MonoBehaviour
         Water_start originalWater = FindObjectOfType<Water_start>();
 
         // Grass 제거 전에 복제
-        (int,int)[] grass_positions = new (int,int)[] { (3, 15), (9, 15), (15, 15)};
+        (int,int)[] grass_positions = new (int,int)[] {(9, 15)};
         List<GameObject> enemyUnits = new List<GameObject>();
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 1; i++)
         {
             GameObject g = Instantiate(originalGrass.gameObject);
             if (g.GetComponent<enemy_color>() == null)

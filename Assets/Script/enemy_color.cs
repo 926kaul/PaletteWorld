@@ -27,6 +27,11 @@ public class enemy_color : y_color
         }
     }
 
+    void OnDestroy()
+    {
+        StageManager.Instance?.OnEnemyDefeated();
+    }
+
     IEnumerator EnemyTurnRoutine() {
         yield return new WaitForSeconds(0.5f);  // 턴 시작 딜레이 추가
 
@@ -89,7 +94,7 @@ public class enemy_color : y_color
 
 
 
-    void Update_skill(){
+    public void Update_skill(){
         color = render.color;
         skills.Add(color);
     }

@@ -172,8 +172,35 @@ public class every_skill : MonoBehaviour{
         skillset[0,2,3,1] = new type0.skill231();
         skillset[0,3,3,1] = new type0.skill331();*/
 
+        normalskill[0] = new type0.skill222();
+        normalskill[1] = new type1.skill311();
+        normalskill[2] = new type2.skill113();
+        normalskill[3] = new type3.skill131();
+        normalskill[4] = new type4.skill331();
+        normalskill[5] = new type5.skill133();
+        normalskill[6] = new type6.skill211();
+        normalskill[7] = new type7.skill231();
+        normalskill[8] = new type8.skill132();
+        normalskill[9] = new type9.skill123();
+        normalskill[10] = new type10.skill313();
+        normalskill[11] = new type11.skill121();
+        normalskill[12] = new type12.skill221();
+        normalskill[13] = new type13.skill212();
+        normalskill[14] = new type14.skill112();
+        normalskill[15] = new type15.skill223();
+        normalskill[16] = new type16.skill122();
+        normalskill[17] = new type17.skill313();
 
+        normalskill[18] = new type1.skill311();
+        normalskill[19] = new type2.skill113();
+        normalskill[20] = new type3.skill131();
+        normalskill[21] = new type4.skill331();
+        normalskill[22] = new type5.skill133();
+        normalskill[23] = new type17.skill313();
+        normalskill[24] = new type10.skill313();
 
+        normalskill[25] = new type0.skill222();
+        normalskill[26] = new type0.skill222();
     }
 
     public start_button start_button;
@@ -264,12 +291,13 @@ public class every_skill : MonoBehaviour{
         else return 2;
     }
 
-    public static monoskill[,,,] skillset = new monoskill[20,5,5,5];
-    public static monoskill[] normalskill = new monoskill[25];
+    public static monoskill[,,,] skillset = new monoskill[27,5,5,5];
+    public static monoskill[] normalskill = new monoskill[27];
     public static monoskill get_skill(Color32 color){
         int[] skill_color = {CustomSkillIndex(color.r), CustomSkillIndex(color.g),CustomSkillIndex(color.b)};
         int type1 = color_to_type(color);
         monoskill tmp = skillset[type1, skill_color[0],skill_color[1],skill_color[2]];
+        Debug.Log($"skillset[{type1},{skill_color[0]},{skill_color[1]},{skill_color[2]}]");
         if(tmp == null){
             tmp = normalskill[type1];
         }
