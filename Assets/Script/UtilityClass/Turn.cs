@@ -5,10 +5,12 @@ using System.Numerics;
 using System.Security.Cryptography;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using Random = System.Random;
 using Vector2 = UnityEngine.Vector2;
+#if UNITY_EDITOR
+using UnityEditor.SceneManagement;
+#endif
 
 public class Turn{
     public static List<y_color> turn_order = new List<y_color>();

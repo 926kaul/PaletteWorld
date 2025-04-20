@@ -4,10 +4,13 @@ using Unity.VisualScripting;
 using UnityEngine;
 using System.Reflection;
 using System;
-using UnityEditor;
 using Unity.Burst.CompilerServices;
-using UnityEditor.UI;
 using UnityEngine.Rendering.Universal.Internal;
+
+#if UNITY_EDITOR
+using UnityEditor;
+using UnityEditor.UI;
+#endif
 
 public class InTurn{}
 
