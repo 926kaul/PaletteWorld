@@ -15,23 +15,37 @@ public class shooting_effect : MonoBehaviour
         currentSpeed = startSpeed;
     }
 
+    private bool arrived = false;
+
     void Update()
     {
-        // 타겟 방향 계산
-        Vector3 direction = (target - transform.position).normalized;
+        if (arrived) return;
 
-        // 현재 속도만큼 전진
-        transform.position += direction * currentSpeed * Time.deltaTime;
-        transform.up = direction;
+        Vector3 toTarget = target - transform.position;
+        Vector3 direction = toTarget.normalized;
 
-        // 속도 점점 증가
-        currentSpeed += acceleration * Time.deltaTime;
+        // 이동 거리 계산
+        float step = currentSpeed * Time.deltaTime;
+        Vector3 nextPos = transform.position + direction * step;
 
-        // 너무 가까우면 삭제
-        if (Vector3.Distance(transform.position, target) < 0.1f)
+        // 이동 경로 선분이 타겟을 지나치는지 확인
+        float beforeDist = Vector3.Dot(target - transform.position, direction);
+        float afterDist = Vector3.Dot(target - nextPos, direction);
+
+        if (beforeDist > 0f && afterDist <= 0f)  // 타겟을 지나쳤다면
         {
+            transform.position = target;
+            arrived = true;
             onArrive?.Invoke();
             Destroy(gameObject);
+            return;
         }
+
+        // 일반 이동
+        transform.position = nextPos;
+        transform.up = direction;
+        currentSpeed += acceleration * Time.deltaTime;
     }
+
+
 }
