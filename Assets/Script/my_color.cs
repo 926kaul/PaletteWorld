@@ -42,7 +42,11 @@ public class y_color : MonoBehaviour
         cc = new ncc(this);
     }
     public void Update_HP(){
-        hp = 60+5*H;
+        hp = full_hp();
+    }
+
+    public int full_hp(){
+        return 60+5*H;
     }
 
     public void use_skill(y_color enemy, monoskill used_skill){

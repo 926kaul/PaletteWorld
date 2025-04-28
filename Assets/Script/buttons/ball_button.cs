@@ -52,7 +52,7 @@ public class ball: InTurn{
     public diceRollUI diceUI;
     public ball_button ballbutton = GameObject.FindObjectOfType<ball_button>();
     public virtual IEnumerator use_ball(y_color attacker, y_color defender){
-        int hit_score = 20*defender.hp/(55+3*defender.H);
+        int hit_score = 20*defender.hp/(defender.full_hp());
         int hit_dice = rnd.Next(1,21);
         if (diceUI == null)
             diceUI = GameObject.FindObjectOfType<diceRollUI>();
@@ -142,7 +142,7 @@ public class ball: InTurn{
         Debug.Log("attacker color: " + attacker.color);
         Debug.Log("attacker level: " + ((my_color)attacker).level);
         attacker.Update_stat();
-        attacker.hp = 55 + 3*attacker.H;
+        attacker.Update_HP();
         ((my_color)attacker).Update_skill();
     }
 }

@@ -37,7 +37,7 @@ public class monoskill : InTurn{
     System.Random rnd = new System.Random();
     public virtual IEnumerator use_skill(y_color attacker, y_color defender){
 
-        int hit_score = (100-this.accuracy)/5 + Math.Max((this.phy?attacker.A:attacker.C) - (this.phy?defender.B:defender.D),0)/4;
+        int hit_score = (100-this.accuracy)/5 + Math.Max((this.phy?defender.B:defender.D)-(this.phy?attacker.A:attacker.C),0)/4;
         int hit_dice = rnd.Next(1,21);
         if((this.type1 == attacker.type1) || (this.type1 == attacker.type2)){
             int hit_dice2 = rnd.Next(1,21);
