@@ -37,11 +37,20 @@ public class monoskill : InTurn{
     System.Random rnd = new System.Random();
     public virtual IEnumerator use_skill(y_color attacker, y_color defender){
 
-        int hit_score = (100-this.accuracy)/5 + Math.Max(Math.Min(defender.S,defender.H)-attacker.H,0);
+        int hit_score = (100-this.accuracy)/5 + Math.Max((this.phy?attacker.A:attacker.C) - (this.phy?defender.B:defender.D),0)/4;
         int hit_dice = rnd.Next(1,21);
-        if (diceUI == null)
-            diceUI = GameObject.FindObjectOfType<diceRollUI>();
-        yield return diceUI.StartCoroutine(diceUI.Roll(hit_dice, hit_score));
+        if((this.type1 == attacker.type1) || (this.type1 == attacker.type2)){
+            int hit_dice2 = rnd.Next(1,21);
+            if (diceUI == null)
+                diceUI = GameObject.FindObjectOfType<diceRollUI>();
+            yield return diceUI.StartCoroutine(diceUI.AdvantageRoll(hit_dice, hit_dice2, hit_score));
+            hit_dice = Math.Max(hit_dice,hit_dice2);
+        }
+        else{
+            if (diceUI == null)
+                    diceUI = GameObject.FindObjectOfType<diceRollUI>();
+            yield return diceUI.StartCoroutine(diceUI.Roll(hit_dice, hit_score));
+        }
 
         yield return this.skill_effect(attacker, defender);
         (bool hit, int damage_score) = this.calc_skill(attacker, defender, hit_dice, hit_score);
@@ -61,21 +70,19 @@ public class monoskill : InTurn{
     public virtual (bool,int) calc_skill(y_color attacker, y_color defender,int hit_dice, int hit_score){
         if(hit_dice==20||(hit_dice!=1&&(hit_score<=hit_dice))){
             Debug.Log("HIT");
-            int damage_dice = rnd.Next(1,21);
-            if(this.type1==attacker.type1 || this.type1==attacker.type2){
-                int damage_dice2 = rnd.Next(1,21);
-                damage_dice = Mathf.Max(damage_dice,damage_dice2);
+            float damage_dice = (float)rnd.Next(1,4);
+            float typevs = every_skill.typevs[this.type1,defender.type1] * every_skill.typevs[this.type1,defender.type2];
+            float critical = 1.0f;
+            float acbd = (float)Mathf.Max((this.phy?attacker.A:attacker.C) - (this.phy?defender.B:defender.D),0);
+            
+            if(hit_dice==20){
+                critical = 2.0f;
+                acbd = (float)(this.phy?attacker.A:attacker.C);
+                damage_dice = 4.0f;
             }
-            int damage_score = this.damage * Mathf.Max(damage_dice + (this.phy?attacker.A:attacker.C) - (this.phy?defender.B:defender.D),0);
-            if(damage_dice==1){
-                damage_score = (int)((float)damage_score * Mathf.Max(every_skill.typevs[this.type1,defender.type1] * every_skill.typevs[this.type1,defender.type2] - 1,0) / 100);
-            }
-            else if(damage_dice==20){
-                damage_score = (int)((float)damage_score * (every_skill.typevs[this.type1,defender.type1] * every_skill.typevs[this.type1,defender.type2] + 1) / 100);
-            }
-            else{
-                damage_score = (int)((float)damage_score * (every_skill.typevs[this.type1,defender.type1] * every_skill.typevs[this.type1,defender.type2] + 1) / 100);
-            }
+
+            int damage_score = (int)(((float)this.damage)/100.00f * typevs * (acbd + 16 + damage_dice) * critical);
+
             damage_score = Mathf.Max(damage_score,0);
             Debug.Log($"{this.name} damage {damage_score}");
             defender.hp -= damage_score;

@@ -41,6 +41,10 @@ public class y_color : MonoBehaviour
         type2 = every_skill.get_skill(color).type2;
         cc = new ncc(this);
     }
+    public void Update_HP(){
+        hp = 60+5*H;
+    }
+
     public void use_skill(y_color enemy, monoskill used_skill){
         if (cc.effect()) {
             StartCoroutine(UseSkillRoutine(enemy, used_skill));
@@ -108,7 +112,7 @@ public class my_color : y_color
         render = GetComponent<SpriteRenderer>();
         color = render.color;
         Update_stat();
-        hp = 55 + 3*H;
+        Update_HP();
         Update_skill();
     }
     void Update(){

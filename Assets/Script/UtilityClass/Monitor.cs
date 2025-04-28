@@ -26,7 +26,7 @@ public class Monitor : MonoBehaviour
         (Color t1color, string t1) = every_skill.type_code[target.type1];
         (Color t2color, string t2) = every_skill.type_code[target.type2];
         stat += $"<color=#{ColorUtility.ToHtmlStringRGB(t1color)}>{t1} <color=#{ColorUtility.ToHtmlStringRGB(t2color)}>{t2}\n";
-        stat += $"<color=#{ColorUtility.ToHtmlStringRGB(target.color)}>HP: {target.hp}/{55+3*target.H}\n";
+        stat += $"<color=#{ColorUtility.ToHtmlStringRGB(target.color)}>HP: {target.hp}/{60+5*target.H}\n";
         stat += $"<color=#{ColorUtility.ToHtmlStringRGB(target.color)}>Distance: {target.distance}\n";
 
         if (target.cc is not ncc)

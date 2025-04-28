@@ -10,7 +10,7 @@ public class enemy_color : y_color
         render = GetComponent<SpriteRenderer>();
         color = render.color;
         Update_stat();
-        hp = 55 + 3*H;
+        Update_HP();
         Update_skill();
         start_button = GetComponent<start_button>();
     }
