@@ -30,4 +30,5 @@ public class GlobalVariables
     public static int[] ball_count = {0,0,0,0};
 
     public static y_color unitThatHandledSpace = null; //스페이스 연속 턴종 버그 픽스
+    public static bool OathTrue = false; //맹세 스킬 여부
 }

@@ -137,7 +137,7 @@ public class my_color : y_color
             GlobalVariables.selected_skill = null;
             GlobalVariables.selected_color = null;
         }
-        if (Input.GetKeyDown(KeyCode.Space)){
+        if (Input.GetKeyDown(KeyCode.Return)){
             if (GlobalVariables.unitThatHandledSpace == null)
             {
                 GlobalVariables.unitThatHandledSpace = this;

@@ -16,7 +16,6 @@ public class shooting_effect : MonoBehaviour
     {
         currentSpeed = startSpeed;
         prefabRotationOffset = transform.rotation;
-        Debug.Log($"[Start] Prefab Rotation (Euler): {transform.eulerAngles}");
     }
 
     private bool arrived = false;

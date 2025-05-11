@@ -23,7 +23,7 @@ public class type21{
             yield return new WaitUntil(() => arrived);
         }
         public override void ApplyAdditional(bool hit, y_color attacker, y_color defender, int damage_score){
-            if(defender.cc is ncc){
+            if(defender.cc is ncc && hit){
                 defender.cc = new par(defender);
             }
             return;

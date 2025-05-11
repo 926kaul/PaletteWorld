@@ -25,7 +25,7 @@ public class type22{
         public override void ApplyAdditional(bool hit, y_color attacker, y_color defender, int damage_score){
             System.Random rnd = new System.Random();
             int dice = rnd.Next(1,21);
-            if((dice >= 15)&&(defender.cc is ncc)){
+            if((dice >= 15)&&(defender.cc is ncc) && hit){
                 defender.cc = new frz(defender);
             }
             return;

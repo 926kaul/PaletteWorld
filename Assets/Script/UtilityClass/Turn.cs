@@ -19,6 +19,7 @@ public class Turn{
         bool ans = false;
         turn_order = new List<y_color>();
         int layerMask = LayerMask.GetMask("Default");
+        GlobalVariables.OathTrue = false;
         Collider2D[] hitColliders = Physics2D.OverlapAreaAll(new Vector2(0,0), new Vector2(18,18), layerMask);
         foreach (Collider2D collider in hitColliders)
         {

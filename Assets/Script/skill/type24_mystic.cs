@@ -5,7 +5,33 @@ using System;
 
 public class type24{
     public class skill132 : monoskill{
-        public skill132() : base(132, "트릭룸", 0, 100, 24, 0, false){
+        public skill132() : base(132, "최면술", 0, 60, 24, 0, false){
+            }
+            public override IEnumerator skill_effect(y_color attacker, y_color defender){
+                bool arrived = false;
+
+                GameObject prefab = Resources.Load<GameObject>("Prefab/MysticHypnosis");
+                GameObject go = UnityEngine.Object.Instantiate(
+                    prefab,
+                    attacker.transform.position,
+                    prefab.transform.rotation
+                );
+
+
+                shooting_effect proj = go.GetComponent<shooting_effect>();
+                proj.target = defender.transform.position;
+                proj.onArrive = () => { arrived = true; };
+                yield return new WaitUntil(() => arrived);
+            }
+            public override void ApplyAdditional(bool hit, y_color attacker, y_color defender, int damage_score){
+                if(defender.cc is ncc && hit){
+                    defender.cc = new slp(defender);
+                }
+                return;
+            }
+    }
+    public class skill142 : monoskill{
+        public skill142() : base(142, "트릭룸", 0, 100, 24, 0, false){
         }
         public override IEnumerator use_skill(y_color attacker, y_color defender){
 
