@@ -49,52 +49,68 @@ public class enemy_color : y_color
         if (my_colors.Count > 0) {
             int target_index = rnd.Next(my_colors.Count); //enemy가 공격할 my color 랜덤으로 선택
             monoskill enemy_selected_skill = every_skill.get_skill(skills[skill_index]);
-            if(enemy_selected_skill.skill_availablity(this,my_colors[target_index])){
-                if (cc.effect()) {
-                    yield return StartCoroutine(UseSkillRoutine(my_colors[target_index], enemy_selected_skill));
-                    Turn.Turn_next(this);
-                }
-                else if (distance <= 1){
-                    Turn.Turn_next(this);
-                    yield break;
-                }
+            if (enemy_selected_skill.skill_availablity(this, my_colors[target_index])) {
+                yield return StartCoroutine(UseSkillRoutine(my_colors[target_index], enemy_selected_skill));
+                Turn.Turn_next(this);
+                yield break;
             }
             else {
                 y_color target = my_colors[target_index];
                 Vector3 startPos = transform.position;
                 Vector3 targetPos = target.transform.position;
-                // 방향 벡터 계산 (정규화된 단위벡터)
-                Vector3 dir = (targetPos - startPos).normalized;
-                // distance 만큼 이동 가능한 거리 계산
-                float maxMove = Mathf.Min(distance, Vector3.Distance(startPos, targetPos) - 0.5f); // 최소 1칸은 남겨둬
-                // 최종 이동 좌표
-                Vector3 newPos = startPos + dir * maxMove;
-                // 이동 위치는 정수화 및 충돌 체크 필요
-                Vector3 rounded = new Vector3(Mathf.Round(newPos.x), Mathf.Round(newPos.y), 0f);
-                // 충돌 체크 (반지름 0.4, Default 레이어)
-                Collider2D[] overlaps = Physics2D.OverlapCircleAll(rounded, 0.3f, LayerMask.GetMask("Default"));
-                bool blocked = false;
-                foreach (var col in overlaps)
-                {
-                    if (col.GetComponent<y_color>() != null && col.gameObject != this.gameObject)
-                    {
-                        blocked = true;
-                        break;
+
+                // 이동 가능한 범위 내 격자점 후보 수집
+                List<Vector3> candidates = new List<Vector3>();
+                int maxStep = distance;
+                for (int dx = -maxStep; dx <= maxStep; dx++) {
+                    for (int dy = -maxStep; dy <= maxStep; dy++) {
+                        int cost = Mathf.Abs(dx) + Mathf.Abs(dy); // 맨해튼 거리
+                        if (cost > maxStep) continue; // 이동 불가한 거리
+
+                        Vector3 point = new Vector3(Mathf.Round(startPos.x + dx), Mathf.Round(startPos.y + dy), 0f);
+                        // 충돌 체크
+                        Collider2D[] overlaps = Physics2D.OverlapCircleAll(point, 0.3f, LayerMask.GetMask("Default"));
+                        bool blocked = false;
+                        foreach (var col in overlaps) {
+                            if (col.GetComponent<y_color>() != null && col.gameObject != this.gameObject) {
+                                blocked = true;
+                                break;
+                            }
+                        }
+                        if (!blocked) candidates.Add(point);
                     }
                 }
-                if (!blocked)
-                {
-                    transform.position = rounded;
-                    distance -= (int)Mathf.Round(Vector3.Distance(startPos, rounded));
-                }
 
-                if(enemy_selected_skill.skill_availablity(this,my_colors[target_index])){ //이동 후 스킬 시전 
-                    yield return StartCoroutine(UseSkillRoutine(my_colors[target_index], enemy_selected_skill));
+                // 가장 가까운 후보를 선택
+                if (candidates.Count > 0) {
+                    Vector3 best = candidates[0];
+                    float minDist = Vector3.Distance(best, targetPos);
+                    foreach (var pt in candidates) {
+                        float d = Vector3.Distance(pt, targetPos);
+                        if (d < minDist) {
+                            minDist = d;
+                            best = pt;
+                        }
+                    }
+
+                    // 실제 이동
+                    transform.position = best;
+                    distance -= (int)Mathf.Round(Vector3.Distance(startPos, best));
+
+                    // 이동 후 다시 스킬 시도
+                    if (enemy_selected_skill.skill_availablity(this, my_colors[target_index])) {
+                        yield return StartCoroutine(UseSkillRoutine(my_colors[target_index], enemy_selected_skill));
+                    }
                 }
 
                 Turn.Turn_next(this);
                 yield break;
             }
+        }
+        else{
+            // 공격할 my_color가 없으면 턴 종료
+            Turn.Turn_next(this);
+            yield break;
         }
     }
 

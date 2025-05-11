@@ -6,7 +6,7 @@ using Unity.VisualScripting;
 
 public class CC{
     public y_color victim;
-    public virtual bool effect(){
+    public virtual bool effect(int hit_dice){
         victim.Update_stat();
         return true;
     }
@@ -16,29 +16,36 @@ public class CC{
 public class ncc : CC{
     public ncc(y_color Victim){
         victim = Victim;
+        this.cc_color = new Color(0,0,0,255);
     }
-    public new Color cc_color = new Color(0,0,0,255);
 }
 public class psn : CC{
     public psn(y_color Victim){
         victim = Victim;
+        this.cc_color = new Color(128,256,0,255);
+        if(victim.type1 == 7 || victim.type2 == 7){
+            victim.cc = new ncc(victim);
+        }
     }
-    public override bool effect(){
+    public override bool effect(int hit_dice){
         victim.hp -= (victim.H+55)/8;
         if(victim.hp<=0){
             Object.Destroy(victim.gameObject);
         }
         return true;
     }
-    public new Color cc_color = new Color(128,256,0,255);
 }
 public class ppsn : CC{
     int turn_point;
     public ppsn(y_color Victim){
         victim = Victim;
         turn_point = 1;
+        this.cc_color = new Color(128,0,128,255);
+        if(victim.type1 == 7 || victim.type2 == 7){
+            victim.cc = new ncc(victim);
+        }
     }
-    public override bool effect(){
+    public override bool effect(int hit_dice){
         victim.hp -= (victim.H+55)*turn_point/16;
         turn_point++;
         if(victim.hp<=0){
@@ -46,75 +53,85 @@ public class ppsn : CC{
         }
         return true;
     }
-    public new Color cc_color = new Color(128,0,128,255);
 }
 public class brn : CC{
     public brn(y_color Victim){
         victim = Victim;
         victim.A = victim.A/2;
+        this.cc_color = new Color(255,0,0,255);
+        if(victim.type1 == 1 || victim.type2 == 1 || victim.type1 == 18 || victim.type2 == 18){
+            victim.cc = new ncc(victim);
+        }
     }
-    public override bool effect(){
+    public override bool effect(int hit_dice){
         victim.hp -= (victim.H+55)/16;
         if(victim.hp<=0){
             Object.Destroy(victim.gameObject);
         }
         return true;
     }
-    public new Color cc_color = new Color(255,0,0,255);
 }
 public class par : CC{
     public par(y_color Victim){
         victim = Victim;
         victim.S = victim.S/2;
+        this.cc_color = new Color(255,255,0,255);
+        if(victim.type1 == 4 || victim.type2 == 4 || victim.type1 == 21 || victim.type2 == 21){
+            victim.cc = new ncc(victim);
+        }
     }
-    public override bool effect(){
-        System.Random rnd = new System.Random();
-        int dice = rnd.Next(1,21);
-        if(dice < 7) return false;
+    public override bool effect(int hit_dice){
+        if(hit_dice < 8) return false;
         return true;
     }
-    public new Color cc_color = new Color(255,255,0,255);
 }
 public class slp : CC{
     int turn_point;
     public slp(y_color Victim){
         victim = Victim;
         turn_point = 0;
+        this.cc_color = new Color(255,0,255,255);
+        
     }
-    public override bool effect(){
+    public override bool effect(int hit_dice){
         turn_point++;
-        if(turn_point<3) return false;
-        return true;
+        if(turn_point >= 3 || hit_dice == 20){
+            victim.cc = new ncc(victim);
+            return true;
+        }
+        return false;
     }
-    public new Color cc_color = new Color(128,128,128,255);
 }
 public class frz : CC{
     public frz(y_color Victim){
         victim = Victim;
         victim.C = victim.C/2;
+        this.cc_color = new Color(0,255,255,255);
+        if(victim.type1 == 5 || victim.type2 == 5 || victim.type1 == 22 || victim.type2 == 22){
+            victim.cc = new ncc(victim);
+        }
     }
-    public override bool effect(){
+    public override bool effect(int hit_dice){
         victim.hp -= (victim.H+55)/16;
         if(victim.hp<=0){
             Object.Destroy(victim.gameObject);
         }
         return true;
     }
-    public new Color cc_color = new Color(0,255,255,255);
 }
 public class rbd: CC{
     int turn_point;
     public rbd(y_color Victim){
         victim = Victim;
         turn_point = 0;
+        this.cc_color = new Color(0,0,128,255);
     }
-    public override bool effect(){
+    public override bool effect(int hit_dice){
         turn_point++;
-        if(turn_point<=1){
-            return false;
+        if(turn_point>1 || hit_dice == 20){
+            victim.cc = new ncc(victim);
+            return true;
         }
-        victim.cc = new ncc(victim);
-        return true;
+        return false;
     }
-    public new Color cc_color = new Color(0,0,128,255);
 }

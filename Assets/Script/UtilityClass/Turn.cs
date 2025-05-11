@@ -51,7 +51,7 @@ public class Turn{
             SetTransparency(turn_order[0], 0.5f);
         }
         GameObject.FindObjectOfType<TurnUI>()?.UpdateTurnDisplay();
-
+        GameObject.FindObjectOfType<MonoBehaviour>().StartCoroutine(ClearSpaceNextFrame());
     }
     public static int comparing(y_color x, y_color y){
         Random random = new Random();
@@ -70,6 +70,10 @@ public class Turn{
             c.a = alpha;
             target.render.color = c;
         }
+    }
+    static IEnumerator ClearSpaceNextFrame() {
+        yield return null;
+        GlobalVariables.unitThatHandledSpace = null;
     }
 }
 

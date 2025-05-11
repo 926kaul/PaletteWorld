@@ -9,11 +9,13 @@ public class type10{
         public override IEnumerator skill_effect(y_color attacker, y_color defender){
             bool arrived = false;
 
+            GameObject prefab = Resources.Load<GameObject>("Prefab/PinkPsychic");
             GameObject go = UnityEngine.Object.Instantiate(
-                Resources.Load<GameObject>("Prefab/PinkPsychic"),
+                prefab,
                 attacker.transform.position,
-                Quaternion.identity
+                prefab.transform.rotation
             );
+
 
             shooting_effect proj = go.GetComponent<shooting_effect>();
             proj.target = defender.transform.position;

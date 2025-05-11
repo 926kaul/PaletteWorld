@@ -12,93 +12,6 @@ using UnityEditor;
 using UnityEditor.UI;
 #endif
 
-public class InTurn{}
-
-public class monoskill : InTurn{
-    public int code;
-    public string name;
-    public int damage;
-    public int accuracy;
-    public int type1;
-    public int type2;
-    public bool phy;
-    public int efrange;
-    public monoskill(int Code, string Name, int Damage, int Accuracy, int Type1, int Type2, bool Phy, int Efrange = 100){
-        code = Code;
-        name = Name;
-        damage = Damage;
-        accuracy = Accuracy;
-        type1 = Type1;
-        type2 = Type2;
-        phy = Phy;
-        efrange = Efrange;
-    }
-
-    System.Random rnd = new System.Random();
-    public virtual IEnumerator use_skill(y_color attacker, y_color defender){
-
-        int hit_score = (100-this.accuracy)/5 + Math.Max((this.phy?defender.B:defender.D)-(this.phy?attacker.A:attacker.C),0)/4;
-        int hit_dice = rnd.Next(1,21);
-        if((this.type1 == attacker.type1) || (this.type1 == attacker.type2)){
-            int hit_dice2 = rnd.Next(1,21);
-            if (diceUI == null)
-                diceUI = GameObject.FindObjectOfType<diceRollUI>();
-            yield return diceUI.StartCoroutine(diceUI.AdvantageRoll(hit_dice, hit_dice2, hit_score));
-            hit_dice = Math.Max(hit_dice,hit_dice2);
-        }
-        else{
-            if (diceUI == null)
-                    diceUI = GameObject.FindObjectOfType<diceRollUI>();
-            yield return diceUI.StartCoroutine(diceUI.Roll(hit_dice, hit_score));
-        }
-
-        yield return this.skill_effect(attacker, defender);
-        (bool hit, int damage_score) = this.calc_skill(attacker, defender, hit_dice, hit_score);
-        yield return defender.damaged(hit, damage_score);
-    }
-
-    public virtual bool skill_availablity(y_color attacker, y_color defender){
-        float dist = Vector3.Distance(attacker.transform.position, defender.transform.position);
-        return dist <= this.efrange;
-    }
-
-    public virtual IEnumerator skill_effect(y_color attacker, y_color defender){
-        yield break;
-    }
-
-    public diceRollUI diceUI;
-    public virtual (bool,int) calc_skill(y_color attacker, y_color defender,int hit_dice, int hit_score){
-        if(hit_dice==20||(hit_dice!=1&&(hit_score<=hit_dice))){
-            Debug.Log("HIT");
-            float damage_dice = (float)rnd.Next(1,4);
-            float typevs = every_skill.typevs[this.type1,defender.type1] * every_skill.typevs[this.type1,defender.type2];
-            float critical = 1.0f;
-            float acbd = (float)Mathf.Max((this.phy?attacker.A:attacker.C) - (this.phy?defender.B:defender.D),0);
-            
-            if(hit_dice==20){
-                critical = 2.0f;
-                acbd = (float)(this.phy?attacker.A:attacker.C);
-                damage_dice = 4.0f;
-            }
-
-            int damage_score = (int)(((float)this.damage)/100.00f * typevs * (acbd + 16 + damage_dice) * critical);
-
-            damage_score = Mathf.Max(damage_score,0);
-            Debug.Log($"{this.name} damage {damage_score}");
-            defender.hp -= damage_score;
-            if(defender.hp <= 0){
-                UnityEngine.Object.Destroy(defender.gameObject);
-            }
-            return (true, damage_score);
-        }
-        else{
-            Debug.Log($"{this.name} MISS");
-            return (false, 0);
-        }
-    }
-
-}
-
 public class every_skill : MonoBehaviour{
     public static float[,] typevs = new float[27,27];
     public static float[,] sub_typevs = new float[18,18]
@@ -171,6 +84,28 @@ public class every_skill : MonoBehaviour{
         skillset[1,3,1,1] = new type1.skill311();
         skillset[2,1,1,3] = new type2.skill113();
         skillset[3,1,3,1] = new type3.skill131();
+        skillset[4,3,3,1] = new type4.skill331();
+        skillset[5,1,3,3] = new type5.skill133();
+        skillset[6,2,1,1] = new type6.skill211();
+        skillset[7,2,3,1] = new type7.skill231();
+        skillset[8,3,2,1] = new type8.skill321();
+        skillset[9,1,2,3] = new type9.skill123();
+        skillset[10,3,1,3] = new type10.skill313();
+        skillset[11,1,1,2] = new type11.skill121();
+        skillset[12,2,2,1] = new type12.skill221();
+        skillset[13,1,2,2] = new type13.skill212();
+        skillset[14,1,1,2] = new type14.skill112();
+        skillset[15,2,2,3] = new type15.skill223();
+        skillset[16,1,2,2] = new type16.skill122();
+        skillset[17,3,1,3] = new type17.skill313();
+        skillset[18,3,2,2] = new type18.skill322();
+        skillset[19,2,2,3] = new type19.skill223();
+        skillset[20,2,3,2] = new type20.skill232();
+        skillset[21,3,3,2] = new type21.skill332();
+        skillset[22,2,3,3] = new type22.skill233();
+        skillset[23,3,2,3] = new type23.skill323();
+        skillset[24,1,3,2] = new type24.skill132();
+
 
         /*skillset[0,1,1,1] = new type0.skill111();
         skillset[0,2,1,1] = new type0.skill211();
@@ -190,7 +125,7 @@ public class every_skill : MonoBehaviour{
         normalskill[5] = new type5.skill133();
         normalskill[6] = new type6.skill211();
         normalskill[7] = new type7.skill231();
-        normalskill[8] = new type8.skill132();
+        normalskill[8] = new type8.skill321();
         normalskill[9] = new type9.skill123();
         normalskill[10] = new type10.skill313();
         normalskill[11] = new type11.skill121();
@@ -201,13 +136,13 @@ public class every_skill : MonoBehaviour{
         normalskill[16] = new type16.skill122();
         normalskill[17] = new type17.skill313();
 
-        normalskill[18] = new type1.skill311();
-        normalskill[19] = new type2.skill113();
-        normalskill[20] = new type3.skill131();
-        normalskill[21] = new type4.skill331();
-        normalskill[22] = new type5.skill133();
-        normalskill[23] = new type17.skill313();
-        normalskill[24] = new type10.skill313();
+        normalskill[18] = new type18.skill322();
+        normalskill[19] = new type19.skill223();
+        normalskill[20] = new type20.skill232();
+        normalskill[21] = new type21.skill332();
+        normalskill[22] = new type22.skill233();
+        normalskill[23] = new type23.skill323();
+        normalskill[24] = new type24.skill132();
 
         normalskill[25] = new type0.skill222();
         normalskill[26] = new type0.skill222();
@@ -342,13 +277,13 @@ public class every_skill : MonoBehaviour{
         (new Color32(128,0,255,255),"Dark"), // 15
         (new Color32(0,128,128,255),"Steel"), // 16
         (new Color32(255,0,128,255),"Fairy"), // 17
-        (new Color32(255,128,128,255),"Fire"), // 18
-        (new Color32(128,128,255,255),"Water"), // 19
-        (new Color32(128,255,128,255),"Grass"), // 20
-        (new Color32(255,255,128,255),"Electric"), // 21
-        (new Color32(128,255,255,255),"Ice"), // 22
-        (new Color32(255,128,255,255),"Fairy"), // 23
-        (new Color32(0,255,128,255),"Psychic"), // 24
+        (new Color32(255,128,128,255),"Magma"), // 18
+        (new Color32(128,128,255,255),"Marine"), // 19
+        (new Color32(128,255,128,255),"Meadow"), // 20
+        (new Color32(255,255,128,255),"Megavolt"), // 21
+        (new Color32(128,255,255,255),"Midwinter"), // 22
+        (new Color32(255,128,255,255),"Melody"), // 23
+        (new Color32(0,255,128,255),"Mystic"), // 24
         (new Color32(0,0,0,255),"BW"), // 25
         (new Color32(255,255,255,255),"None"), // 26
     };

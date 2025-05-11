@@ -50,9 +50,7 @@ public class y_color : MonoBehaviour
     }
 
     public void use_skill(y_color enemy, monoskill used_skill){
-        if (cc.effect()) {
-            StartCoroutine(UseSkillRoutine(enemy, used_skill));
-        }
+        StartCoroutine(UseSkillRoutine(enemy, used_skill));
     }
     public IEnumerator UseSkillRoutine(y_color enemy, monoskill used_skill)
     {
@@ -120,6 +118,13 @@ public class my_color : y_color
         Update_skill();
     }
     void Update(){
+        if(stage_set==1&&(this.transform.position.x < 0 || this.transform.position.x > 18 || this.transform.position.y < 0 || this.transform.position.y > 18)){
+            UnityEngine.Object.Destroy(this.gameObject);
+            GameObject.FindObjectOfType<TurnUI>()?.UpdateTurnDisplay();
+        }
+
+        if (Turn.turn_order.Count == 0 || Turn.turn_order[0] != this) return;
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             for(int i=0; i<4; i++){
@@ -132,12 +137,12 @@ public class my_color : y_color
             GlobalVariables.selected_skill = null;
             GlobalVariables.selected_color = null;
         }
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            TryEndTurn();
-        }
-        if(stage_set==1&&(this.transform.position.x < 0 || this.transform.position.x > 18 || this.transform.position.y < 0 || this.transform.position.y > 18)){
-            UnityEngine.Object.Destroy(this.gameObject);
-            GameObject.FindObjectOfType<TurnUI>()?.UpdateTurnDisplay();
+        if (Input.GetKeyDown(KeyCode.Space)){
+            if (GlobalVariables.unitThatHandledSpace == null)
+            {
+                GlobalVariables.unitThatHandledSpace = this;
+                TryEndTurn();
+            }
         }
     }
     void OnMouseDown(){
@@ -147,6 +152,7 @@ public class my_color : y_color
             mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
             offset = transform.position - mousePosition;
             isDragging = true;
+            this.Update_skill();
         }
         if(stage_set==1){
             GlobalVariables.selected_color = this;
@@ -214,7 +220,7 @@ public class my_color : y_color
     public void Update_skill(){
         color = render.color;
         byte[] skill_color = {CustomSkillIndex(color.r), CustomSkillIndex(color.g), CustomSkillIndex(color.b)};
-        if(skills.Count <= GlobalVariables.fibo[level]){
+        if(skills.Count <= GlobalVariables.fibo[level] && !skills.Contains(new Color32(skill_color[0],skill_color[1],skill_color[2],255))){
             skills.Add(new Color32(skill_color[0],skill_color[1],skill_color[2],255));
         }
         else{
@@ -237,5 +243,4 @@ public class my_color : y_color
             Turn.Turn_next(this);
         }
     }
-
 }

@@ -98,5 +98,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {x: 0, y: 0, z: 0}
-  startSpeed: 5
-  acceleration: 100
+  startSpeed: 2
+  acceleration: 20

@@ -8,12 +8,14 @@ public class type15{
         }
         public override IEnumerator skill_effect(y_color attacker, y_color defender){
             bool arrived = false;
-
+            
+            GameObject prefab = Resources.Load<GameObject>("Prefab/DarkBite");
             GameObject go = UnityEngine.Object.Instantiate(
-                Resources.Load<GameObject>("Prefab/DarkBite"),
+                prefab,
                 attacker.transform.position,
-                Quaternion.identity
+                prefab.transform.rotation
             );
+
 
             shooting_effect proj = go.GetComponent<shooting_effect>();
             proj.target = defender.transform.position;

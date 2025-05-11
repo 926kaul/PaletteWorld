@@ -9,13 +9,14 @@ public class type2{
         public override IEnumerator skill_effect(y_color attacker, y_color defender){
             bool arrived = false;
 
-            GameObject circle = UnityEngine.Object.Instantiate(
-                Resources.Load<GameObject>("Prefab/BlueCircle"),
+            GameObject prefab = Resources.Load<GameObject>("Prefab/BlueCircle");
+            GameObject go = UnityEngine.Object.Instantiate(
+                prefab,
                 attacker.transform.position,
-                Quaternion.identity
+                prefab.transform.rotation
             );
 
-            shooting_effect proj = circle.GetComponent<shooting_effect>();
+            shooting_effect proj = go.GetComponent<shooting_effect>();
             proj.target = defender.transform.position;
             proj.onArrive = () => { arrived = true; };
             yield return new WaitUntil(() => arrived);

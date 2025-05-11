@@ -9,11 +9,13 @@ public class type11{
         public override IEnumerator skill_effect(y_color attacker, y_color defender){
             bool arrived = false;
 
+            GameObject prefab = Resources.Load<GameObject>("Prefab/BeetleBite");
             GameObject go = UnityEngine.Object.Instantiate(
-                Resources.Load<GameObject>("Prefab/BeetleBite"),
+                prefab,
                 attacker.transform.position,
-                Quaternion.identity
+                prefab.transform.rotation
             );
+
 
             shooting_effect proj = go.GetComponent<shooting_effect>();
             proj.target = defender.transform.position;

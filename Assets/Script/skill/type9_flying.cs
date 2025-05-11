@@ -9,11 +9,13 @@ public class type9{
         public override IEnumerator skill_effect(y_color attacker, y_color defender){
             bool arrived = false;
 
+            GameObject prefab = Resources.Load<GameObject>("Prefab/FlyingBeak");
             GameObject go = UnityEngine.Object.Instantiate(
-                Resources.Load<GameObject>("Prefab/FlyingBeak"),
+                prefab,
                 attacker.transform.position,
-                Quaternion.identity
+                prefab.transform.rotation
             );
+
 
             shooting_effect proj = go.GetComponent<shooting_effect>();
             proj.target = defender.transform.position;

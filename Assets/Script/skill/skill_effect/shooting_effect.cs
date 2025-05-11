@@ -9,10 +9,14 @@ public class shooting_effect : MonoBehaviour
     [SerializeField] private float acceleration = 100f;     // 초당 속도 증가량
     private float currentSpeed = 0f;
     public System.Action onArrive;
+    private Quaternion prefabRotationOffset;
+
 
     void Start()
     {
         currentSpeed = startSpeed;
+        prefabRotationOffset = transform.rotation;
+        Debug.Log($"[Start] Prefab Rotation (Euler): {transform.eulerAngles}");
     }
 
     private bool arrived = false;
@@ -23,16 +27,13 @@ public class shooting_effect : MonoBehaviour
 
         Vector3 toTarget = target - transform.position;
         Vector3 direction = toTarget.normalized;
-
-        // 이동 거리 계산
         float step = currentSpeed * Time.deltaTime;
         Vector3 nextPos = transform.position + direction * step;
 
-        // 이동 경로 선분이 타겟을 지나치는지 확인
         float beforeDist = Vector3.Dot(target - transform.position, direction);
         float afterDist = Vector3.Dot(target - nextPos, direction);
 
-        if (beforeDist > 0f && afterDist <= 0f)  // 타겟을 지나쳤다면
+        if (beforeDist > 0f && afterDist <= 0f)
         {
             transform.position = target;
             arrived = true;
@@ -41,11 +42,18 @@ public class shooting_effect : MonoBehaviour
             return;
         }
 
-        // 일반 이동
         transform.position = nextPos;
-        transform.up = direction;
+
+        // 기본 회전 방향은 이동 방향(up 기준)
+        Quaternion lookRotation = Quaternion.FromToRotation(Vector3.up, direction);
+        Quaternion finalRotation = lookRotation * prefabRotationOffset;
+        transform.rotation = finalRotation;
+
         currentSpeed += acceleration * Time.deltaTime;
     }
+
+
+
 
 
 }

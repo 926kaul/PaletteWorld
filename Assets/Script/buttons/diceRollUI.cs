@@ -10,15 +10,13 @@ public class diceRollUI : MonoBehaviour
     public SpriteRenderer diceRenderer;
     public Sprite[] diceSprites;
     public TextMeshPro hitScoreText;
-
-    public float flashDuration = 0.5f;
     public float flashSpeed = 0.05f;
     public bool isRolling = false;
 
     public SpriteRenderer diceRenderer1;
     public SpriteRenderer diceRenderer2;
 
-    public IEnumerator Roll(int result, int hitScore)
+    public IEnumerator Roll(int result, int hitScore, float flashDuration = 0.5f)
     {   
         isRolling = true;
         Monitor.instance?.Clear();
@@ -49,7 +47,7 @@ public class diceRollUI : MonoBehaviour
         isRolling = false;
     }
 
-    public IEnumerator AdvantageRoll(int result1, int result2, int hitScore)
+    public IEnumerator AdvantageRoll(int result1, int result2, int hitScore, float flashDuration = 0.5f)
     {
         isRolling = true;
         Monitor.instance?.Clear();
@@ -105,7 +103,7 @@ public class diceRollUI : MonoBehaviour
         isRolling = false;
     }
 
-    public IEnumerator DisadvantageRoll(int result1, int result2, int hitScore)
+    public IEnumerator DisadvantageRoll(int result1, int result2, int hitScore, float flashDuration = 0.5f)
     {
         isRolling = true;
         Monitor.instance?.Clear();
