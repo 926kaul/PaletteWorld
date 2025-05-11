@@ -222,10 +222,42 @@ public class type0{
     }
 
 
-    public class skill222 : monoskill{
-        public skill222() : base(222, "몸통박치기", 40, 100, 0, 26, true, 1){
-        }
+    public class skill222 : monoskill
+{
+    public skill222() : base(222, "몸통박치기", 40, 100, 0, 26, true, 1)
+    {
     }
+
+    public override IEnumerator skill_effect(y_color attacker, y_color defender)
+    {
+        bool arrived = false;
+
+        // 빈 이펙트 프리팹 로드 (SpriteRenderer 포함된 껍데기)
+        GameObject basePrefab = Resources.Load<GameObject>("Prefab/NormalBody");
+        GameObject go = UnityEngine.Object.Instantiate(
+            basePrefab,
+            attacker.transform.position,
+            basePrefab.transform.rotation
+        );
+
+        // SpriteRenderer 복제
+        SpriteRenderer attackerRenderer = attacker.GetComponent<SpriteRenderer>();
+        SpriteRenderer projRenderer = go.GetComponent<SpriteRenderer>();
+        projRenderer.sprite = attackerRenderer.sprite;
+        projRenderer.color = attackerRenderer.color;
+        projRenderer.sortingLayerName = "Effect";
+        projRenderer.sortingOrder = 5;
+
+        go.transform.localScale = attacker.transform.localScale;
+
+        // 타겟 설정
+        shooting_effect proj = go.GetComponent<shooting_effect>();
+        proj.target = defender.transform.position;
+        proj.onArrive = () => { arrived = true; };
+
+        yield return new WaitUntil(() => arrived);
+    }
+}
 }
 
 
