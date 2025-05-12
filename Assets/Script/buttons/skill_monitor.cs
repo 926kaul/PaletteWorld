@@ -26,4 +26,18 @@ public class skill_monitor : MonoBehaviour
         GlobalVariables.selected_skill = every_skill.get_skill(render.color);
     }
 
+    void OnMouseEnter()
+    {
+        monoskill skill = every_skill.get_skill(render.color);
+        if (skill != null)
+        {
+            Monitor.instance?.ShowSkillInfo(skill, render.color);
+        }
+    }
+
+    void OnMouseExit()
+    {
+        Monitor.instance?.Clear();
+    }
+
 }

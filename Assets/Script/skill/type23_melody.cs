@@ -5,7 +5,7 @@ using System;
 
 public class type23{
     public class skill323 : monoskill{
-        public skill323() : base(323, "드레인키스", 50, 100, 23, 0, false, 2){
+        public skill323() : base(323, "드레인키스", 50, 100, 23, 0, false, 2, "가한 피해의 절반만큼 체력을 회복한다."){
         }
         public override IEnumerator skill_effect(y_color attacker, y_color defender){
             bool arrived = false;
@@ -24,7 +24,8 @@ public class type23{
             yield return new WaitUntil(() => arrived);
         }
         public override void ApplyAdditional(bool hit, y_color attacker, y_color defender, int damage_score){
-            attacker.hp = Math.Min(attacker.hp + damage_score/2, attacker.full_hp());
+            if(hit)
+                attacker.hp = Math.Min(attacker.hp + damage_score/2, attacker.full_hp());
         }
         
     }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class type21{
     public class skill332 : monoskill{
-        public skill332() : base(332, "볼부비부비", 20, 100, 21, 0, true, 2){
+        public skill332() : base(332, "볼부비부비", 20, 100, 21, 0, true, 2, "상대를 마비 상태로 만든다."){
         }
         public override IEnumerator skill_effect(y_color attacker, y_color defender){
             bool arrived = false;

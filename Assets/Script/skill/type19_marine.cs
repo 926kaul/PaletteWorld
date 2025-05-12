@@ -5,7 +5,7 @@ using System;
 
 public class type19{
     public class skill223 : monoskill{
-        public skill223() : base(223, "물의 맹세", 50, 100, 19, 0, false){
+        public skill223() : base(223, "물의 맹세", 50, 100, 19, 0, false, 100, "이번 라운드에 맹세 스킬이 사용되었다면,\n <color=#80C080>풀의 맹세</color>와 <color=#C08080>불의 맹세</color>를 추가로 사용한다."){
         }
         public override IEnumerator use_skill(y_color attacker, y_color defender){
 
@@ -59,11 +59,13 @@ public class type19{
                 yield return defender.damaged(hit, damage_score);
 
                 if(GlobalVariables.OathTrue){
+                    if (attacker == null || defender == null) yield break;
                     monoskill MeadowOath = new type20.skill232();
                     yield return MeadowOath.skill_effect(attacker, defender);
                     (hit, damage_score) = MeadowOath.calc_skill(attacker, defender, hit_dice, hit_score);
                     yield return defender.damaged(hit, damage_score);
-
+                    
+                    if(attacker == null || defender == null) yield break;
                     monoskill MagmaOath = new type18.skill322();
                     yield return MagmaOath.skill_effect(attacker, defender);
                     (hit, damage_score) = MagmaOath.calc_skill(attacker, defender, hit_dice, hit_score);
@@ -97,7 +99,7 @@ public class type19{
         }
     }
     public class skill224 : monoskill{
-        public skill224() : base(224, "물수리검", 25, 100, 19, 0, true){
+        public skill224() : base(224, "물수리검", 25, 100, 19, 0, true, 100, "명중 시 이 기술을 다시 시전한다 (최대 5회)"){
         }
         
         public override IEnumerator skill_effect(y_color attacker, y_color defender){

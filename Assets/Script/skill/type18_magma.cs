@@ -5,7 +5,7 @@ using System;
 
 public class type18{
     public class skill322 : monoskill{
-        public skill322() : base(322, "불의 맹세", 50, 100, 18, 0, false){
+        public skill322() : base(322, "불의 맹세", 50, 100, 18, 0, false, 100, "이번 라운드에 맹세 스킬이 사용되었다면,\n <color=#8080C0>물의 맹세</color>와 <color=#80C080>풀의 맹세</color>를 추가로 사용한다."){
         }
         public override IEnumerator use_skill(y_color attacker, y_color defender){
 
@@ -59,11 +59,13 @@ public class type18{
                 yield return defender.damaged(hit, damage_score);
 
                 if(GlobalVariables.OathTrue){
+                    if (attacker == null || defender == null) yield break;
                     monoskill MarineOath = new type19.skill223();
                     yield return MarineOath.skill_effect(attacker, defender);
                     (hit, damage_score) = MarineOath.calc_skill(attacker, defender, hit_dice, hit_score);
                     yield return defender.damaged(hit, damage_score);
 
+                    if(attacker == null || defender == null) yield break;
                     monoskill MeadowOath = new type20.skill232();
                     yield return MeadowOath.skill_effect(attacker, defender);
                     (hit, damage_score) = MeadowOath.calc_skill(attacker, defender, hit_dice, hit_score);
@@ -98,7 +100,7 @@ public class type18{
     }
 
     public class skill422 : monoskill{
-        public skill422() : base(422, "화염볼", 120, 90, 18, 0, true){
+        public skill422() : base(422, "화염볼", 120, 90, 18, 0, true, 100, "10% 확률로 상대를 화상 상태로 만든다"){
         }
         public override IEnumerator skill_effect(y_color attacker, y_color defender){
             bool arrived = false;

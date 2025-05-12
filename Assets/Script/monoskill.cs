@@ -23,7 +23,8 @@ public class monoskill : InTurn{
     public int type2;
     public bool phy;
     public int efrange;
-    public monoskill(int Code, string Name, int Damage, int Accuracy, int Type1, int Type2, bool Phy, int Efrange = 100){
+    public string info;
+    public monoskill(int Code, string Name, int Damage, int Accuracy, int Type1, int Type2, bool Phy, int Efrange = 100, string Info = ""){
         code = Code;
         name = Name;
         damage = Damage;
@@ -32,6 +33,7 @@ public class monoskill : InTurn{
         type2 = Type2;
         phy = Phy;
         efrange = Efrange;
+        info = Info;
     }
 
     protected System.Random rnd = new System.Random();

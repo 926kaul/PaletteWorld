@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class type22{
     public class skill233 : monoskill{
-        public skill233() : base(233, "얼어붙은\n바람", 80, 100, 22, 0, false){
+        public skill233() : base(233, "얼어붙은\n바람", 80, 100, 22, 0, false, 100, "30% 확률로 상대를 동상 상태로 만든다"){
         }
         public override IEnumerator skill_effect(y_color attacker, y_color defender){
             bool arrived = false;

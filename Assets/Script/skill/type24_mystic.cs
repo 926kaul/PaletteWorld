@@ -5,7 +5,7 @@ using System;
 
 public class type24{
     public class skill132 : monoskill{
-        public skill132() : base(132, "최면술", 0, 60, 24, 0, false){
+        public skill132() : base(132, "최면술", 0, 60, 24, 0, false, 100, "상대를 잠듦 상태로 만든다."){
             }
             public override IEnumerator skill_effect(y_color attacker, y_color defender){
                 bool arrived = false;
@@ -31,7 +31,7 @@ public class type24{
             }
     }
     public class skill142 : monoskill{
-        public skill142() : base(142, "트릭룸", 0, 100, 24, 0, false){
+        public skill142() : base(142, "트릭룸", 0, 100, 24, 0, false, 100, "스테이지 상의 모든 색깔들의 속도를 반전시킨다."){
         }
         public override IEnumerator use_skill(y_color attacker, y_color defender){
 

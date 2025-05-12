@@ -259,7 +259,7 @@ public class every_skill : MonoBehaviour{
 
     public static (Color,string)[] type_code = new (Color,string)[27]
     {   
-        (new Color32(255,255,255,255),"Normal"), // 0
+        (new Color32(128,128,128,255),"Normal"), // 0
         (new Color32(255,0,0,255),"Fire"), // 1
         (new Color32(0,0,255,255),"Water"), // 2
         (new Color32(0,255,0,255),"Grass"), // 3

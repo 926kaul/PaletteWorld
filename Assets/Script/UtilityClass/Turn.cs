@@ -37,6 +37,8 @@ public class Turn{
         GameObject.FindObjectOfType<TurnUI>()?.UpdateTurnDisplay();
         if (turn_order.Count > 0) {
             SetTransparency(turn_order[0], 0.5f); // 반투명
+            if (turn_order.Count > 0 && turn_order[0] is my_color my)
+                my.SelectThisUnit();
         }
         return ans;
     }
@@ -51,6 +53,9 @@ public class Turn{
             turn_order.Sort(comparing);
             SetTransparency(turn_order[0], 0.5f);
         }
+
+        if (turn_order.Count > 0 && turn_order[0] is my_color my)
+            my.SelectThisUnit();
         GameObject.FindObjectOfType<TurnUI>()?.UpdateTurnDisplay();
         GameObject.FindObjectOfType<MonoBehaviour>().StartCoroutine(ClearSpaceNextFrame());
     }

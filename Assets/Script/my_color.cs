@@ -144,6 +144,41 @@ public class my_color : y_color
                 TryEndTurn();
             }
         }
+        if (Input.GetKeyDown(KeyCode.P)) {
+            if (skills.Count > 0) {
+                // 1. 가능한 모든 (스킬, 타겟) 조합 수집
+                y_color[] allUnits = GameObject.FindObjectsOfType<y_color>();
+                List<enemy_color> possibleTargets = new List<enemy_color>();
+                foreach (y_color unit in allUnits) {
+                    if (unit is enemy_color enemy && enemy != this)
+                        possibleTargets.Add(enemy);
+                }
+
+                List<(Color, enemy_color)> usableCombos = new List<(Color, enemy_color)>();
+
+                foreach (Color skillColor in skills) {
+                    monoskill skill = every_skill.get_skill(skillColor);
+                    foreach (enemy_color target in possibleTargets) {
+                        if (skill.skill_availablity(this, target)) {
+                            usableCombos.Add((skillColor, target));
+                        }
+                    }
+                }
+
+                // 2. 사용 가능한 조합이 없다면 리턴
+                if (usableCombos.Count == 0) {
+                    Debug.Log("No valid skill-target pair available.");
+                    return;
+                }
+
+                // 3. 무작위 조합 선택
+                var (selectedSkillColor, selectedTarget) = usableCombos[Random.Range(0, usableCombos.Count)];
+                monoskill selectedSkill = every_skill.get_skill(selectedSkillColor);
+
+                // 4. 스킬 시전
+                this.use_skill(selectedTarget, selectedSkill);
+            }
+        }
     }
     void OnMouseDown(){
         if(stage_set==0){
@@ -155,23 +190,7 @@ public class my_color : y_color
             this.Update_skill();
         }
         if(stage_set==1){
-            GlobalVariables.selected_color = this;
-            for(int i=0; i<4; i++){
-                if(skills.Count > i){
-                    SpriteRenderer render = GlobalVariables.skill_monitors[i].render;
-                    render.color = skills[i];
-                    render.sortingLayerName = "Default";
-                    render.sortingOrder = 2;
-                    GlobalVariables.skill_monitors[i].mainText.text = every_skill.get_skill(skills[i]).name;
-                }
-                else{
-                    SpriteRenderer render = GlobalVariables.skill_monitors[i].render;
-                    render.color = new Color(255,255,255,255);
-                    render.sortingLayerName = "Background";
-                    render.sortingOrder = 0;
-                    GlobalVariables.skill_monitors[i].mainText.text = "";
-                }
-            }
+            SelectThisUnit();
         }
     }
     void OnMouseDrag(){
@@ -243,4 +262,29 @@ public class my_color : y_color
             Turn.Turn_next(this);
         }
     }
+    
+    public void SelectThisUnit(){
+        GlobalVariables.selected_color = this;
+
+        for (int i = 0; i < 4; i++)
+        {
+            if (skills.Count > i)
+            {
+                SpriteRenderer render = GlobalVariables.skill_monitors[i].render;
+                render.color = skills[i];
+                render.sortingLayerName = "Default";
+                render.sortingOrder = 2;
+                GlobalVariables.skill_monitors[i].mainText.text = every_skill.get_skill(skills[i]).name;
+            }
+            else
+            {
+                SpriteRenderer render = GlobalVariables.skill_monitors[i].render;
+                render.color = new Color(255, 255, 255, 255);
+                render.sortingLayerName = "Background";
+                render.sortingOrder = 0;
+                GlobalVariables.skill_monitors[i].mainText.text = "";
+            }
+        }
+    }
+
 }

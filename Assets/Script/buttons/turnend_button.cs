@@ -16,7 +16,7 @@ public class turnend_button : MonoBehaviour
     }
     void OnMouseDown()
     {
-        if (turnUI.currentTarget != null)
+        if (turnUI.currentTarget != null && GlobalVariables.selected_color != null && Turn.turn_order.Count > 0 && GlobalVariables.selected_color == Turn.turn_order[0])
             Turn.Turn_next(turnUI.currentTarget);
     }
 }

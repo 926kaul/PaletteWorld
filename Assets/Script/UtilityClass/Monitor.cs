@@ -43,5 +43,43 @@ public class Monitor : MonoBehaviour
     {
         mainText.text = "";
     }
+
+    public void ShowSkillInfo(monoskill skill, Color skillColor)
+    {
+        if (diceRollUI != null && diceRollUI.isRolling) return;
+
+        string skillColorHex = ColorUtility.ToHtmlStringRGB(skillColor);
+
+        string stat = $"<size=8><color=#{skillColorHex}>{skill.name}\n</size>";
+        stat += "<size=6>";
+
+        (Color t1color, string t1) = every_skill.type_code[skill.type1];
+        (Color t2color, string t2) = every_skill.type_code[skill.type2];
+
+        stat += $"<color=#{ColorUtility.ToHtmlStringRGB(t1color)}>{t1} ";
+        stat += $"<color=#{ColorUtility.ToHtmlStringRGB(t2color)}>{t2}\n";
+
+        string powStr = skill.damage.ToString().PadLeft(3, ' ');
+        string accStr = skill.accuracy.ToString().PadLeft(3, ' ');
+        string rngStr = skill.efrange.ToString().PadLeft(3, ' ');
+
+        stat += $"<color=#808080>Pow: {powStr}  ";
+        stat += $"Acc: {accStr}  ";
+        stat += $"Rng: {rngStr}   ";
+
+        if (skill.phy)
+            stat += $"<color=#FF00FF>Phy\n\n";
+        else
+            stat += $"<color=#8000FF>Spe\n\n";
+
+        if (!string.IsNullOrEmpty(skill.info))
+        {
+            stat += $"<size=5><color=#AAAAAA>{skill.info}";
+        }
+
+        stat += "</size>";
+
+        mainText.text = stat;
+    }
 }
 
