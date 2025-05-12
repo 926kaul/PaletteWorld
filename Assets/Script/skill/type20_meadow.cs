@@ -97,6 +97,37 @@ public class type20{
         public override void ApplyAdditional(bool hit, y_color attacker, y_color defender, int damage_score){
             GlobalVariables.OathTrue = true;
         }
+
+        public override IEnumerator react_skill(y_color attacker, y_color defender){
+
+            int hit_score = (100-this.accuracy)/5 + Math.Max((this.phy?defender.B:defender.D)-(this.phy?attacker.A:attacker.C),0)/4;
+            int hit_dice = rnd.Next(1,21);
+
+            if(attacker.cc is ncc){
+                yield return this.skill_effect(attacker, defender);
+                (bool hit, int damage_score) = this.calc_skill(attacker, defender, hit_dice, hit_score);
+                yield return defender.damaged(hit, damage_score);
+
+                if(GlobalVariables.OathTrue){
+                    if (attacker == null || defender == null) yield break;
+                    monoskill MagmaOath = new type18.skill322();
+                    yield return MagmaOath.skill_effect(attacker, defender);
+                    (hit, damage_score) = MagmaOath.calc_skill(attacker, defender, hit_dice, hit_score);
+                    yield return defender.damaged(hit, damage_score);
+
+                    if(attacker == null || defender == null) yield break;
+                    monoskill MarineOath = new type19.skill223();
+                    yield return MarineOath.skill_effect(attacker, defender);
+                    (hit, damage_score) = MarineOath.calc_skill(attacker, defender, hit_dice, hit_score);
+                    yield return defender.damaged(hit, damage_score);
+                }
+
+                ApplyAdditional(hit, attacker, defender, damage_score);
+            }
+            else{
+                yield break;
+            }
+        }
     }
     public class skill242 : monoskill{
         public skill242() : base(242, "트릭플라워", 35, 100, 20, 0, true, 100, "무조건 급소에 명중한다."){

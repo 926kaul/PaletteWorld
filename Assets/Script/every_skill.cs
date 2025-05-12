@@ -81,41 +81,42 @@ public class every_skill : MonoBehaviour{
             typevs[i, 26] = 1.0f; // None type is 26
         }
 
-        skillset[1,3,1,1] = new type1.skill311();
-        skillset[2,1,1,3] = new type2.skill113();
-        skillset[3,1,3,1] = new type3.skill131();
-        skillset[4,3,3,1] = new type4.skill331();
-        skillset[5,1,3,3] = new type5.skill133();
-        skillset[6,2,1,1] = new type6.skill211();
-        skillset[7,2,3,1] = new type7.skill231();
-        skillset[8,3,2,1] = new type8.skill321();
-        skillset[9,1,2,3] = new type9.skill123();
-        skillset[10,3,1,3] = new type10.skill313();
-        skillset[11,1,1,2] = new type11.skill121();
-        skillset[12,2,2,1] = new type12.skill221();
-        skillset[13,1,2,2] = new type13.skill212();
-        skillset[14,1,1,2] = new type14.skill112();
-        skillset[15,2,2,3] = new type15.skill223();
-        skillset[16,1,2,2] = new type16.skill122();
-        skillset[17,3,1,3] = new type17.skill313();
-        skillset[18,3,2,2] = new type18.skill322();
-        skillset[19,2,2,3] = new type19.skill223();
-        skillset[20,2,3,2] = new type20.skill232();
-        skillset[21,3,3,2] = new type21.skill332();
-        skillset[22,2,3,3] = new type22.skill233();
-        skillset[23,3,2,3] = new type23.skill323();
-        skillset[24,1,3,2] = new type24.skill132();
+        for (int a = 0; a <= 26; a++){
+            for (int b = 0; b <= 4; b++){
+                for (int c = 0; c <= 4; c++){
+                    for (int d = 0; d <= 4; d++){
+                        string className = $"type{a}";
+                        string methodName = $"skill{b}{c}{d}";
 
+                        try
+                        {
+                            // 타입 찾기
+                            Type type = Type.GetType(className);
+                            if (type == null)
+                            {
+                                skillset[a, b, c, d] = null;
+                                continue;
+                            }
 
-        /*skillset[0,1,1,1] = new type0.skill111();
-        skillset[0,2,1,1] = new type0.skill211();
-        skillset[0,3,1,1] = new type0.skill311();
-        skillset[0,1,2,1] = new type0.skill121();
-        skillset[0,2,2,1] = new type0.skill221();
-        skillset[0,3,2,1] = new type0.skill231();
-        skillset[0,1,3,1] = new type0.skill131();
-        skillset[0,2,3,1] = new type0.skill231();
-        skillset[0,3,3,1] = new type0.skill331();*/
+                            // 생성자 없는 static inner class로 접근
+                            Type innerType = type.GetNestedType(methodName, BindingFlags.Public | BindingFlags.NonPublic);
+                            if (innerType == null)
+                            {
+                                skillset[a, b, c, d] = null;
+                                continue;
+                            }
+
+                            monoskill instance = (monoskill)Activator.CreateInstance(innerType);
+                            skillset[a, b, c, d] = instance;
+                        }
+                        catch
+                        {
+                            skillset[a, b, c, d] = null;
+                        }
+                    }
+                }
+            }
+        }
 
         normalskill[0] = new type0.skill222();
         normalskill[1] = new type1.skill311();
@@ -181,12 +182,33 @@ public class every_skill : MonoBehaviour{
                 }
                 if(blocked) return;
 
+                 // ✅ 1. 이동 전 대응 대상 기억
+                List<enemy_color> prevInRange = new List<enemy_color>();
+                foreach (var unit in GameObject.FindObjectsOfType<enemy_color>())
+                {
+                    if (Vector3.Distance(selected.transform.position, unit.transform.position) <= 3f)
+                    {
+                        prevInRange.Add(unit);
+                    }
+                }
+
                 float dist = Vector2.Distance(selected.transform.position, mouseWorldPos);
 
                 if (selected.distance >= dist)
                 {
                     selected.transform.position = mouseWorldPos;
                     selected.distance -= Mathf.RoundToInt(dist);  // 거리 감소 (정수 처리)
+
+                    foreach (var unit in prevInRange)
+                    {
+                        if (Vector3.Distance(selected.transform.position, unit.transform.position) > 3f)
+                        {
+                            // 대응 조건 만족: 이동 전에는 가까웠는데 지금은 멀어짐
+                            int t1 = unit.type1;
+                            monoskill reacting_skill = normalskill[t1];
+                            StartCoroutine(reacting_skill.react_skill(unit, selected));
+                        }
+                    }
                 }
                 else
                 {

@@ -97,6 +97,36 @@ public class type19{
         public override void ApplyAdditional(bool hit, y_color attacker, y_color defender, int damage_score){
             GlobalVariables.OathTrue = true;
         }
+        public override IEnumerator react_skill(y_color attacker, y_color defender){
+
+            int hit_score = (100-this.accuracy)/5 + Math.Max((this.phy?defender.B:defender.D)-(this.phy?attacker.A:attacker.C),0)/4;
+            int hit_dice = rnd.Next(1,21);
+
+            if(attacker.cc is ncc){
+                yield return this.skill_effect(attacker, defender);
+                (bool hit, int damage_score) = this.calc_skill(attacker, defender, hit_dice, hit_score);
+                yield return defender.damaged(hit, damage_score);
+
+                if(GlobalVariables.OathTrue){
+                    if (attacker == null || defender == null) yield break;
+                    monoskill MeadowOath = new type20.skill232();
+                    yield return MeadowOath.skill_effect(attacker, defender);
+                    (hit, damage_score) = MeadowOath.calc_skill(attacker, defender, hit_dice, hit_score);
+                    yield return defender.damaged(hit, damage_score);
+                    
+                    if(attacker == null || defender == null) yield break;
+                    monoskill MagmaOath = new type18.skill322();
+                    yield return MagmaOath.skill_effect(attacker, defender);
+                    (hit, damage_score) = MagmaOath.calc_skill(attacker, defender, hit_dice, hit_score);
+                    yield return defender.damaged(hit, damage_score);
+                }
+
+                ApplyAdditional(hit, attacker, defender, damage_score);
+            }
+            else{
+                yield break;
+            }
+        }
     }
     public class skill224 : monoskill{
         public skill224() : base(224, "물수리검", 25, 100, 19, 0, true, 100, "명중 시 이 기술을 다시 시전한다 (최대 5회)"){

@@ -139,4 +139,20 @@ public class monoskill : InTurn{
         // nothing for no additional skill
     }
 
+    public virtual IEnumerator react_skill(y_color attacker, y_color defender){
+
+        int hit_score = (100-this.accuracy)/5 + Math.Max((this.phy?defender.B:defender.D)-(this.phy?attacker.A:attacker.C),0)/4;
+        int hit_dice = rnd.Next(1,21);
+
+        if(attacker.cc is ncc){
+            yield return this.skill_effect(attacker, defender);
+            (bool hit, int damage_score) = this.calc_skill(attacker, defender, hit_dice, hit_score);
+            yield return defender.damaged(hit, damage_score);
+            ApplyAdditional(hit, attacker, defender, damage_score);
+        }
+        else{
+            yield break;
+        }
+    }
+
 }

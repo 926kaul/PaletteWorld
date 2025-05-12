@@ -108,6 +108,15 @@ public class enemy_color : y_color
             }
         }
 
+        // 이동 전 나에게 가까웠던 my_color 목록 저장
+        List<my_color> closeBeforeMove = new List<my_color>();
+        foreach (var unit in my_colors)
+        {
+            float dist = Vector3.Distance(unit.transform.position, startPos);
+            if (dist <= 3f)
+                closeBeforeMove.Add(unit);
+        }
+
         // 4. fallback 이동
         if (candidates.Count == 0)
         {
@@ -156,6 +165,18 @@ public class enemy_color : y_color
         if (selectedSkill.skill_availablity(this, target))
         {
             yield return StartCoroutine(UseSkillRoutine(target, selectedSkill));
+        }
+
+        // 이동 후 대응 처리
+        foreach (var unit in closeBeforeMove)
+        {
+            float newDist = Vector3.Distance(unit.transform.position, transform.position);
+            if (newDist > 3f)
+            {
+                int t1 = unit.type1;
+                monoskill reactingSkill = every_skill.normalskill[t1];
+                unit.StartCoroutine(reactingSkill.react_skill(unit, this));
+            }
         }
 
         // 6. 최종 종료
