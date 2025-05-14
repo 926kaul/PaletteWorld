@@ -98,6 +98,14 @@ public class ball: InTurn{
         yield return defender.damaged(true, 100);
         switch(ballbutton.ball_mode){
             case 0:
+                attacker.color = new Color32(
+                    (byte)(defender.color.r),
+                    (byte)(defender.color.g),
+                    (byte)(defender.color.b),
+                    255
+                );
+                attacker.render.color = attacker.color;
+                ((my_color)attacker).level += 1;
                 UnityEngine.Object.Destroy(defender.gameObject);
                 break;
             case 1:

@@ -28,12 +28,17 @@ public class Fire_start : MonoBehaviour
         for (int i = 0; i < 1; i++)
         {
             GameObject g = Instantiate(originalGrass.gameObject);
-            if (g.GetComponent<enemy_color>() == null)
+            if (g.GetComponent<enemy_color>() == null){
                 g.AddComponent<enemy_color>();
+                g.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Prefab/enemy");
+                g.transform.localScale = new Vector3(0.25f, 0.25f, 1f);
+                g.GetComponent<CircleCollider2D>().radius = 1.4f;
+            }
             g.GetComponent<Grass_start>().chosen = -1;
             int tmpr = rnd.Next(0, 32);
             int tmpg = rnd.Next(0, 32);
             int tmpb = rnd.Next(0, 32);
+            
             g.GetComponent<enemy_color>().color = new Color32((byte)(tmpr + 32), (byte)(tmpg + 192), (byte)(tmpb + 32), 255);
             g.GetComponent<enemy_color>().Update_stat();
             g.transform.position = new Vector3(grass_positions[i].Item1, grass_positions[i].Item2, 0);

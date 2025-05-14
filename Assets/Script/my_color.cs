@@ -108,7 +108,7 @@ public class my_color : y_color
     private bool isDragging = false;
     private Vector3 offset;
     private Vector3 original_position;
-    public int level=1;
+    public int level=0;
     // Start is called before the first frame update
     void Start(){
         render = GetComponent<SpriteRenderer>();
@@ -145,7 +145,7 @@ public class my_color : y_color
             }
         }
         if (Input.GetKeyDown(KeyCode.P)) {
-            if (skills.Count > 0) {
+            if (skills.Count > 0 && !skill_locked) {
                 // 1. 가능한 모든 (스킬, 타겟) 조합 수집
                 y_color[] allUnits = GameObject.FindObjectsOfType<y_color>();
                 List<enemy_color> possibleTargets = new List<enemy_color>();
@@ -176,6 +176,7 @@ public class my_color : y_color
                 monoskill selectedSkill = every_skill.get_skill(selectedSkillColor);
 
                 // 4. 스킬 시전
+                skill_locked = true;
                 this.use_skill(selectedTarget, selectedSkill);
             }
         }
@@ -239,11 +240,11 @@ public class my_color : y_color
     public void Update_skill(){
         color = render.color;
         byte[] skill_color = {CustomSkillIndex(color.r), CustomSkillIndex(color.g), CustomSkillIndex(color.b)};
-        if(skills.Count <= GlobalVariables.fibo[level] && !skills.Contains(new Color32(skill_color[0],skill_color[1],skill_color[2],255))){
+        if(level < 4 && !skills.Contains(new Color32(skill_color[0],skill_color[1],skill_color[2],255))){
             skills.Add(new Color32(skill_color[0],skill_color[1],skill_color[2],255));
         }
         else{
-            // write later
+            skills[level%4] = new Color32(skill_color[0],skill_color[1],skill_color[2],255);
         }
     }
     public static byte CustomSkillIndex(byte value)

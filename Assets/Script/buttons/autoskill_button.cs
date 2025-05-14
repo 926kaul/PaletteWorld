@@ -24,7 +24,7 @@ public class autoskill_button : MonoBehaviour
         {
             my_color my = GlobalVariables.selected_color as my_color;
 
-            if (my != null && my.skills.Count > 0)
+            if (my != null && my.skills.Count > 0 && !my.skill_locked)
             {
                 // 2. 모든 가능한 (스킬, 타겟) 조합 수집
                 y_color[] allUnits = GameObject.FindObjectsOfType<y_color>();
@@ -58,6 +58,7 @@ public class autoskill_button : MonoBehaviour
                 // 4. 무작위 조합 선택 및 시전
                 var (selectedSkillColor, selectedTarget) = usableCombos[Random.Range(0, usableCombos.Count)];
                 monoskill selectedSkill = every_skill.get_skill(selectedSkillColor);
+                my.skill_locked = true;
                 my.use_skill(selectedTarget, selectedSkill);
             }
         }

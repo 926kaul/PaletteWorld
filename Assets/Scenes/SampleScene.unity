@@ -4243,6 +4243,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   render: {fileID: 1273020636}
+  EnemySprite: {fileID: 21300000, guid: 26180769dbe327d40af8f4f56882104d, type: 3}
+  MySprite: {fileID: 21300000, guid: 15fef93f1ba6ccd448e1251283ebbd3b, type: 3}
   activeColor: {r: 0.7529412, g: 0.7529412, b: 0.7529412, a: 1}
   inactiveColor: {r: 0, g: 0, b: 0, a: 0.3}
   clickableCollider: {fileID: 0}

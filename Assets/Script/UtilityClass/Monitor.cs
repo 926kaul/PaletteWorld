@@ -68,7 +68,7 @@ public class Monitor : MonoBehaviour
         stat += $"Rng: {rngStr}   ";
 
         if (skill.phy)
-            stat += $"<color=#FF00FF>Phy\n\n";
+            stat += $"<color=#800000>Phy\n\n";
         else
             stat += $"<color=#8000FF>Spe\n\n";
 

@@ -9,7 +9,7 @@ public class type18{
         }
         public override IEnumerator use_skill(y_color attacker, y_color defender){
 
-            int hit_score = (100-this.accuracy)/5 + Math.Max((this.phy?defender.B:defender.D)-(this.phy?attacker.A:attacker.C),0)/4;
+            int hit_score = (100-this.accuracy)/5 + Math.Max((this.phy?defender.B:defender.D)-(this.phy?attacker.A:attacker.C),0)/2;
             int hit_dice = rnd.Next(1,21);
             int dicy_point = 0;
 

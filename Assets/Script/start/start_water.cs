@@ -26,8 +26,12 @@ public class Water_start : MonoBehaviour
             for (int i = 0; i < 1; i++)
             {
                 GameObject g = Instantiate(originalFire.gameObject);
-                if (g.GetComponent<enemy_color>() == null)
+                if (g.GetComponent<enemy_color>() == null){
                     g.AddComponent<enemy_color>();
+                    g.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Prefab/enemy");
+                    g.transform.localScale = new Vector3(0.25f, 0.25f, 1f);
+                    g.GetComponent<CircleCollider2D>().radius = 1.4f;
+                }
                 g.GetComponent<Fire_start>().chosen = -1;
                 int tmpr = rnd.Next(0, 32);
                 int tmpg = rnd.Next(0, 32);
