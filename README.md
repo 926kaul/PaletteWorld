@@ -65,7 +65,8 @@ https://926kaul.github.io/PaletteWorldWeb/
 - **M계열 타입**: 기존 타입에 '2'가 붙은 확장 타입.  
   - 상성은 동일하지만 더 **강력한 스킬**을 가짐.
 
-![타입 분포도](TypeCube).PNG)
+![image](https://github.com/user-attachments/assets/0c4d94ee-2c65-4499-9e1c-5bd01dbcbaf6)
+
 
 ## 능력치 계산 (RGB → H/A/B/C/D/S)
 
