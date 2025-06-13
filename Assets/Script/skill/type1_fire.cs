@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class type1{
     public class skill311 : monoskill{
-        public skill311() : base(311, "불꽃세례", 40, 100, 1, 0, false){
+        public skill311() : base(311, "불꽃세례", 40, 100, 1, 0, false, 100){
         }
         public override IEnumerator skill_effect(y_color attacker, y_color defender){
             bool arrived = false;
@@ -211,5 +212,125 @@ public class type1{
             attacker.cc = new rbd(attacker);
             return;
         }
+    }
+
+    public class skill410 : monoskill{
+        public skill410() : base(410, "분화", 150, 100, 1, 8, false, 100, "광역(3), 자신의 HP가 적을 수록 위력이 떨어진다"){
+        }
+        public override IEnumerator skill_effect(y_color attacker, y_color defender)
+        {
+            yield return Explosion.Exploding(
+                prefabPath: "Prefab/FireExplosion",
+                position: defender.transform.position,
+                growDuration: 0.45f,
+                fadeDuration: 0.15f,
+                maxScale: 12f,
+                startAlpha: 0.1f,
+                endAlpha: 0.8f,
+                startColor: new Color(192f / 255f, 0f, 0f),
+                endColor: new Color(1f, 63f / 255f, 0f)
+            );
+        }
+
+        public override IEnumerator use_skill(y_color attacker, y_color defender){
+
+            int hit_score = (100-this.accuracy)/5 + Math.Max((this.phy?defender.B:defender.D)-(this.phy?attacker.A:attacker.C),0)/2;
+            int hit_dice = rnd.Next(1,21);
+            int dicy_point = 0;
+
+            if((this.type1 == attacker.type1) || (this.type1 == attacker.type2)) //자속보정으로 유리보정
+                dicy_point += 1;
+            
+            if(this.efrange > 3){
+                Type targetType = (attacker is my_color) ? typeof(enemy_color) : typeof(my_color);
+
+                y_color[] allUnits = GameObject.FindObjectsOfType<y_color>();
+                foreach (y_color unit in allUnits)
+                {
+                    if (unit.GetType() != targetType) continue;
+
+                    if (unit.cc is ncc && Vector3.Distance(attacker.transform.position, unit.transform.position) <= 3f)
+                    {
+                        dicy_point -= 1;
+                        break;
+                    }
+                }
+            } // 원거리 (사거지 3초과)인 기술을 쓰는데 상태이상이 없는 상대가 거리 3이하에 있으면 압박을 받아 불리보정
+            
+
+            if(dicy_point > 0){
+                int hit_dice2 = rnd.Next(1,21);
+                if (diceUI == null)
+                    diceUI = GameObject.FindObjectOfType<diceRollUI>();
+                yield return diceUI.StartCoroutine(diceUI.AdvantageRoll(hit_dice, hit_dice2, hit_score));
+                hit_dice = Math.Max(hit_dice,hit_dice2);
+            }
+            else if (dicy_point == 0){
+                if (diceUI == null)
+                        diceUI = GameObject.FindObjectOfType<diceRollUI>();
+                yield return diceUI.StartCoroutine(diceUI.Roll(hit_dice, hit_score));
+            }
+            else{
+                int hit_dice2 = rnd.Next(1,21);
+                if (diceUI == null)
+                    diceUI = GameObject.FindObjectOfType<diceRollUI>();
+                yield return diceUI.StartCoroutine(diceUI.DisadvantageRoll(hit_dice, hit_dice2, hit_score));
+                hit_dice = Math.Min(hit_dice,hit_dice2);
+            }
+
+            if(attacker.cc.effect(hit_dice)){
+                yield return this.skill_effect(attacker, defender);
+                bool hit; int damage_score;
+                y_color[] allUnits = GameObject.FindObjectsOfType<y_color>();
+                foreach (y_color unit in allUnits)
+                {
+                    if (Vector3.Distance(defender.transform.position, unit.transform.position) <= 2f)
+                    {   
+                        hit_score = (100-this.accuracy)/5 + Math.Max((this.phy?unit.B:unit.D)-(this.phy?attacker.A:attacker.C),0)/2;
+                        (hit, damage_score) = this.calc_skill(attacker, unit, hit_dice, hit_score);
+                        CoroutineRunner.Instance.StartCoroutine(unit.damaged(hit, damage_score));
+                        ApplyAdditional(hit, attacker, unit, damage_score);
+                    }
+                }
+                
+            }
+            else{
+                yield break;
+            }
+        }
+
+        public override (bool,int) calc_skill(y_color attacker, y_color defender,int hit_dice, int hit_score){
+            if(hit_dice==20||(hit_dice!=1&&(hit_score<=hit_dice))){
+                Debug.Log("HIT");
+                float damage_dice = (float)rnd.Next(1,4);
+                float typevs = every_skill.typevs[this.type1,defender.type1] * every_skill.typevs[this.type1,defender.type2];
+                float critical = 1.0f;
+                float acbd = (float)Mathf.Max((this.phy?attacker.A:attacker.C) - (this.phy?defender.B:defender.D),0);
+                float tmp_damage = (float)(this.damage * attacker.hp / attacker.full_hp());
+                
+                if(hit_dice==20){
+                    critical = 2.0f;
+                    acbd = (float)(this.phy?attacker.A:attacker.C);
+                    damage_dice = 4.0f;
+                }
+
+                int damage_score = (int)(((float)tmp_damage)/100.00f * typevs * (acbd + 16 + damage_dice) * critical);
+                damage_score = WetherAndField(damage_score);
+
+                damage_score = Mathf.Max(damage_score,0);
+                Debug.Log($"damage : {tmp_damage}, typevs {this.type1} vs {defender.type1} : {typevs}, acbd {acbd}, damage_dice {damage_dice}, critical {critical}");
+                Debug.Log($"{this.name} damage {damage_score}");
+                defender.hp -= damage_score;
+                if(defender.hp <= 0){
+                    UnityEngine.Object.Destroy(defender.gameObject);
+                }
+                return (true, damage_score);
+            }
+            else{
+                Debug.Log($"{this.name} MISS");
+                return (false, 0);
+            }
+        }
+        
     }
 }

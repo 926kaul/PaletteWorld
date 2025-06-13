@@ -63,8 +63,6 @@ public class TurnUI : MonoBehaviour
                 }
                 else if (unit is my_color){
                     turnSlots[i].sprite = MySprite;
-                    Vector3 originalScale = turnSlots[i].transform.localScale;
-                    float scaleFactor = 2f;
                     turnSlots[i].transform.localScale = new Vector3(
                             0.2336362f,
                             1.475188f,

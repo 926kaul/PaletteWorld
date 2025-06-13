@@ -119,6 +119,7 @@ public class monoskill : InTurn{
             }
 
             int damage_score = (int)(((float)this.damage)/100.00f * typevs * (acbd + 16 + damage_dice) * critical);
+            damage_score = WetherAndField(damage_score);
 
             damage_score = Mathf.Max(damage_score,0);
             Debug.Log($"damage : {this.damage}, typevs {this.type1} vs {defender.type1} : {typevs}, acbd {acbd}, damage_dice {damage_dice}, critical {critical}");
@@ -135,7 +136,51 @@ public class monoskill : InTurn{
         }
     }
 
-    public virtual void ApplyAdditional(bool hit, y_color attacker, y_color defender, int damage_score){
+    public int WetherAndField(int damage_score) {
+        if(GlobalVariables.weather == 1 && this.type1 == 1)
+            damage_score = (int)(damage_score * 1.5f);
+        else if(GlobalVariables.weather == 1 && this.type1 == 2)
+            damage_score = (int)(damage_score * 0.5f);
+
+        else if (GlobalVariables.weather == 2 && this.type1 == 2)
+            damage_score = (int)(damage_score * 1.5f);
+        else if (GlobalVariables.weather == 2 && this.type1 == 1)
+            damage_score = (int)(damage_score * 0.5f);
+
+        else if (GlobalVariables.weather == 3 && this.type1 == 12)
+            damage_score = (int)(damage_score * 1.5f);
+        else if (GlobalVariables.weather == 3 && this.type1 == 5)
+            damage_score = (int)(damage_score * 0.5f);
+
+        else if (GlobalVariables.weather == 4 && this.type1 == 5)
+            damage_score = (int)(damage_score * 1.5f);
+        else if (GlobalVariables.weather == 4 && this.type1 == 12)
+            damage_score = (int)(damage_score * 1.5f);
+
+        if(GlobalVariables.field == 1 && this.type1 == 3)
+            damage_score = (int)(damage_score * 1.3f);
+        else if(GlobalVariables.field == 1 && this.type1 == 4)
+            damage_score = (int)(damage_score * 0.5f);
+            
+        else if(GlobalVariables.field == 2 && this.type1 == 4)
+            damage_score = (int)(damage_score * 1.3f);
+        else if(GlobalVariables.field == 2 && this.type1 == 3)
+            damage_score = (int)(damage_score * 0.5f);
+
+        else if (GlobalVariables.field == 3 && this.type1 == 10)
+            damage_score = (int)(damage_score * 1.3f);
+        else if (GlobalVariables.field == 3 && this.type1 == 17)
+            damage_score = (int)(damage_score * 0.5f);
+            
+        else if (GlobalVariables.field == 4 && this.type1 == 17)
+            damage_score = (int)(damage_score * 1.3f);
+        else if (GlobalVariables.field == 4 && this.type1 == 10)
+            damage_score = (int)(damage_score * 0.5f);
+
+        return damage_score;
+    }
+
+    public virtual void ApplyAdditional(bool hit, y_color attacker, y_color defender, int damage_score) {
         // nothing for no additional skill
     }
 

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6874959959597085980}
   - component: {fileID: 1810195880288578184}
   - component: {fileID: 6860374459767143601}
+  - component: {fileID: 9115926568046800622}
   m_Layer: 0
   m_Name: enemy_color
   m_TagString: Untagged
@@ -125,7 +126,7 @@ CircleCollider2D:
   m_GameObject: {fileID: 1670601675370641850}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: c5fbe155e719d354b9ea3fb01c74c96f, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -164,10 +165,10 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 0
+  m_LinearDrag: 5
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: c5fbe155e719d354b9ea3fb01c74c96f, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -178,3 +179,15 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &9115926568046800622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1670601675370641850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d9dd4011a49bd1408ca3b77fd86f039, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

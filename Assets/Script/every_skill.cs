@@ -54,6 +54,7 @@ public class every_skill : MonoBehaviour{
         { 1.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 2.0f, 2.0f, 0.5f, 1.0f },
         
     };
+
     void Start(){
         Dictionary<int,int> adv_type = new Dictionary<int,int>(){
             {18,1},{19,2},{20,3},{21,4},{22,5},{23,17},{24,10}
