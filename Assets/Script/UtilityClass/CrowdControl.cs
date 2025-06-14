@@ -7,16 +7,21 @@ using Unity.VisualScripting;
 public class CC{
     public y_color victim;
     public virtual bool effect(int hit_dice){
-        victim.Update_stat();
         return true;
     }
     public Color cc_color;
 }
 
-public class ncc : CC{
-    public ncc(y_color Victim){
+public class ncc : CC
+{
+    public ncc(y_color Victim)
+    {
         victim = Victim;
-        this.cc_color = new Color(0,0,0,255);
+        this.cc_color = new Color(0, 0, 0, 255);
+    }
+    public override bool effect(int hit_dice){
+        victim.recover_stat();
+        return true;
     }
 }
 public class psn : CC{
@@ -131,6 +136,10 @@ public class rbd: CC{
         if(turn_point>1 || hit_dice == 20){
             victim.cc = new ncc(victim);
             return true;
+        }
+        if(turn_point==1){
+            victim.cc = new ncc(victim);
+            return false;
         }
         return false;
     }

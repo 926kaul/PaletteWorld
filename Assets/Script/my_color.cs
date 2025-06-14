@@ -7,6 +7,7 @@ using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.U2D.IK;
 using TMPro;
+using System;
 
 public class y_color : MonoBehaviour
 {
@@ -44,12 +45,35 @@ public class y_color : MonoBehaviour
     public void Update_HP(){
         hp = full_hp();
     }
+    
 
-    public int full_hp(){
-        return 60+5*H;
+    public int full_hp()
+    {
+        return 60 + 5 * H;
+    }
+    public void recover_stat(){
+        if (render == null)
+            render = GetComponent<SpriteRenderer>();
+        render.color = color;
+        int Red = Mathf.RoundToInt(color.r * 255);
+        int Green = Mathf.RoundToInt(color.g * 255);
+        int Blue = Mathf.RoundToInt(color.b * 255);
+        H = Math.Max(H,Green%16);
+        A = Math.Max(A,Red%16);
+        C = Math.Max(C,Blue%16);
+        B = Math.Max(B,15-C);
+        D = Math.Max(D,15-A);
+        S = Math.Max(S,15-H);
+        type1 = every_skill.color_to_type(color);
+        if(type1 == 25){
+            Turn.Turn_next(this);
+            Destroy(this.gameObject);
+        }
+        type2 = every_skill.get_skill(color).type2;
     }
 
-    public void use_skill(y_color enemy, monoskill used_skill){
+    public void use_skill(y_color enemy, monoskill used_skill)
+    {
         StartCoroutine(UseSkillRoutine(enemy, used_skill));
     }
     public IEnumerator UseSkillRoutine(y_color enemy, monoskill used_skill)
@@ -172,7 +196,7 @@ public class my_color : y_color
                 }
 
                 // 3. 무작위 조합 선택
-                var (selectedSkillColor, selectedTarget) = usableCombos[Random.Range(0, usableCombos.Count)];
+                var (selectedSkillColor, selectedTarget) = usableCombos[UnityEngine.Random.Range(0, usableCombos.Count)];
                 monoskill selectedSkill = every_skill.get_skill(selectedSkillColor);
 
                 // 4. 스킬 시전
