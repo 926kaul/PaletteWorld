@@ -77,9 +77,12 @@ public class every_skill : MonoBehaviour{
                 typevs[i, j] = sub_typevs[adv_type[i], adv_type[j]];
             }
         }
-        for(int i=0;i<25;i++){
-            typevs[i, 25] = 2.0f;  //black and white is 25
-            typevs[i, 26] = 1.0f; // None type is 26
+        for (int i = 0; i < 25; i++)
+        {
+            typevs[i, 25] = 1.0f;  //black is 25
+            typevs[i, 26] = 1.0f; //white is 26
+            typevs[25, i] = 2.0f; 
+            typevs[26, i] = 1.0f; 
         }
 
         for (int a = 0; a <= 26; a++){
@@ -245,7 +248,7 @@ public class every_skill : MonoBehaviour{
         {
             {1, 10, 17},
             {8, 18, 23},
-            {4, 21, 25}
+            {4, 21, 26}
         }
     };
     public static int color_to_type(Color32 color){
@@ -307,8 +310,8 @@ public class every_skill : MonoBehaviour{
         (new Color32(128,255,255,255),"Midwinter"), // 22
         (new Color32(255,128,255,255),"Melody"), // 23
         (new Color32(0,255,128,255),"Mystic"), // 24
-        (new Color32(0,0,0,255),"BW"), // 25
-        (new Color32(255,255,255,255),"None"), // 26
+        (new Color32(0,0,0,255),"Black"), // 25
+        (new Color32(255,255,255,255),"White"), // 26
     };
 }
 
