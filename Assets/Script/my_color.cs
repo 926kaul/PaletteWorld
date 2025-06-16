@@ -290,6 +290,7 @@ public class my_color : y_color
     
     public void SelectThisUnit(){
         GlobalVariables.selected_color = this;
+        GlobalVariables.selected_skill = null;
 
         for (int i = 0; i < 4; i++)
         {

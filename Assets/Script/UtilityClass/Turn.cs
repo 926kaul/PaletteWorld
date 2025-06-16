@@ -46,10 +46,12 @@ public class Turn{
         SetTransparency(done_color, 1.0f);
         turn_order.Remove(done_color);
         turn_order.RemoveAll(item => item == null); //공격을 맞고 destory된 것을 제거
-        if(turn_order.Count==0){
+        if (turn_order.Count == 0)
+        {
             Turn_start();
         }
-        else{
+        else
+        {
             turn_order.Sort(comparing);
             SetTransparency(turn_order[0], 0.5f);
         }

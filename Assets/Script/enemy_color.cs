@@ -3,10 +3,17 @@ using System.Collections.Generic;
 using System.Transactions;
 using Unity.VisualScripting;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor.ShaderGraph.Internal;
+#endif
+using UnityEngine.U2D.IK;
+using TMPro;
+using System;
 public class enemy_color : y_color
 {
     // Start is called before the first frame update
-    void Start(){
+    void Start()
+    {
         render = GetComponent<SpriteRenderer>();
         color = render.color;
         Update_stat();
@@ -16,12 +23,15 @@ public class enemy_color : y_color
     }
 
     public start_button start_button;
-    void Update() {
-        if (start_button.started && Turn.turn_order.Count > 0 && this == Turn.turn_order[0] && !skill_locked) {
+    void Update()
+    {
+        if (start_button.started && Turn.turn_order.Count > 0 && this == Turn.turn_order[0] && !skill_locked)
+        {
             skill_locked = true;
             StartCoroutine(EnemyTurnRoutine());
         }
-        if(this.transform.position.x < 0 || this.transform.position.x > 18 || this.transform.position.y < 0 || this.transform.position.y > 18){
+        if (this.transform.position.x < 0 || this.transform.position.x > 18 || this.transform.position.y < 0 || this.transform.position.y > 18)
+        {
             UnityEngine.Object.Destroy(this.gameObject);
             GameObject.FindObjectOfType<TurnUI>()?.UpdateTurnDisplay();
         }
@@ -57,7 +67,8 @@ public class enemy_color : y_color
         Turn.Turn_next(this);
     }
 
-    private IEnumerator EnemyTurnLogic(){
+    private IEnumerator EnemyTurnLogic()
+    {
         yield return new WaitForSeconds(0.5f);  // 턴 시작 딜레이
 
         System.Random rnd = new System.Random();
@@ -85,6 +96,7 @@ public class enemy_color : y_color
         // 2. 사거리 안이면 바로 공격
         if (selectedSkill.skill_availablity(this, target))
         {
+            yield return StartCoroutine(shouting(selectedSkill));
             yield return StartCoroutine(UseSkillRoutine(target, selectedSkill));
             EnemyTurnCompleted = true;
             yield break;
@@ -164,6 +176,7 @@ public class enemy_color : y_color
 
         if (selectedSkill.skill_availablity(this, target))
         {
+            yield return StartCoroutine(shouting(selectedSkill));
             yield return StartCoroutine(UseSkillRoutine(target, selectedSkill));
         }
 
@@ -184,8 +197,40 @@ public class enemy_color : y_color
         yield break;
     }
 
-    public void Update_skill(){
+    public void Update_skill()
+    {
         color = render.color;
         skills.Add(color);
+    }
+    
+    private static GameObject damageTextPrefab;
+    public IEnumerator shouting(monoskill skill){
+        if (damageTextPrefab == null)
+            damageTextPrefab = Resources.Load<GameObject>("Prefab/damage_score");
+        // 1. 텍스트 생성
+        GameObject dmgTextObj = Instantiate(damageTextPrefab, transform.position + new Vector3(0, 1.2f, 0), Quaternion.identity);
+
+        // 2. 텍스트 내용 설정
+        TextMeshPro text = dmgTextObj.GetComponent<TextMeshPro>();
+            text.text = skill.name + "!";
+
+        // 3. 색상 defender의 색으로 설정
+        text.color = this.color;
+
+        // 4. 살짝 떠오르고 사라지기
+        float duration = 0.5f;
+        Vector3 startPos = dmgTextObj.transform.position;
+        Vector3 endPos = startPos + new Vector3(0, 0.5f, 0);
+
+        float elapsed = 0;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            dmgTextObj.transform.position = Vector3.Lerp(startPos, endPos, elapsed / duration);
+            yield return null;
+        }
+
+        Destroy(dmgTextObj);
+        GameObject.FindObjectOfType<TurnUI>()?.UpdateTurnDisplay();
     }
 }

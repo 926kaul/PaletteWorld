@@ -1868,7 +1868,7 @@ public class type0
 
     public class skill333 : monoskill
     {
-        public skill333() : base(323, "테라버스트", 80, 100, 0, 26, false, 100, "자신의 색깔에 해당하는 타입들의 피해를 준다")
+        public skill333() : base(333, "테라버스트", 80, 100, 0, 26, false, 100, "자신의 색깔에 해당하는 타입들의 피해를 준다")
         {
         }
 

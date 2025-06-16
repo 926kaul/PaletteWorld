@@ -7,22 +7,6 @@ public class GlobalVariables
 {
     public static List<setball> setballs = new List<setball>(new setball[6]);
     public static List<skill_monitor> skill_monitors = new List<skill_monitor>(new skill_monitor[4]);
-    public static Dictionary<int, float> Rankchange = new Dictionary<int, float>
-    {
-        {-6,0.25f},
-        {-5,0.29f},
-        {-4,0.34f},
-        {-3,0.40f},
-        {-2,0.50f},
-        {-1,0.67f},
-        {0,1f},
-        {1,1.50f},
-        {2,2.00f},
-        {3,2.50f},
-        {4,3.00f},
-        {5,3.50f},
-        {6,4.00f}
-    };
     public static InTurn selected_skill;
     public static my_color selected_color;
     public static int[] ball_count = { 0, 0, 0, 0 };
