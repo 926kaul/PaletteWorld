@@ -789,7 +789,7 @@ public class type0
 
     public class skill222 : monoskill
     {
-        public skill222() : base(222, "몸통박치기", 40, 100, 0, 26, true, 1)
+        public skill222() : base(222, "몸통박치기", 40, 100, 0, 0, true, 1)
         {
         }
 
@@ -1030,6 +1030,10 @@ public class type0
                 attacker.render.color = attacker.color;
                 attacker.Update_stat();
                 ((my_color)attacker).Update_skill();
+                if (attacker is enemy_color)
+                {
+                    attacker.skills.Add(attacker.color);
+                }
             }
             return;
         }

@@ -13,7 +13,7 @@ public class y_color : MonoBehaviour
 {
     public SpriteRenderer render;
     public Color32 color;
-    public int H,A,B,C,D,S;
+    public int H, A, B, C, D, S;
     public int type1, type2;
     public int hp;
     public List<Color> skills = new List<Color>();
@@ -21,51 +21,56 @@ public class y_color : MonoBehaviour
     public bool skill_locked = false;
     public int distance;
 
-    public void Update_stat(){
+    public void Update_stat()
+    {
         if (render == null)
             render = GetComponent<SpriteRenderer>();
         render.color = color;
         int Red = Mathf.RoundToInt(color.r * 255);
         int Green = Mathf.RoundToInt(color.g * 255);
         int Blue = Mathf.RoundToInt(color.b * 255);
-        H = Green%16;
-        A = Red%16;
-        C = Blue%16;
-        B = 15-C;
-        D = 15-A;
-        S = 15-H;
+        H = Green % 16;
+        A = Red % 16;
+        C = Blue % 16;
+        B = 15 - C;
+        D = 15 - A;
+        S = 15 - H;
         type1 = every_skill.color_to_type(color);
-        if(type1 == 25){
+        if (type1 == 25)
+        {
             Turn.Turn_next(this);
             Destroy(this.gameObject);
         }
         type2 = every_skill.get_skill(color).type2;
         cc = new ncc(this);
     }
-    public void Update_HP(){
+    public void Update_HP()
+    {
         hp = full_hp();
     }
-    
+
 
     public int full_hp()
     {
         return 60 + 5 * H;
     }
-    public void recover_stat(){
+    public void recover_stat()
+    {
         if (render == null)
             render = GetComponent<SpriteRenderer>();
         render.color = color;
         int Red = Mathf.RoundToInt(color.r * 255);
         int Green = Mathf.RoundToInt(color.g * 255);
         int Blue = Mathf.RoundToInt(color.b * 255);
-        H = Math.Max(H,Green%16);
-        A = Math.Max(A,Red%16);
-        C = Math.Max(C,Blue%16);
-        B = Math.Max(B,15-C);
-        D = Math.Max(D,15-A);
-        S = Math.Max(S,15-H);
+        H = Math.Max(H, Green % 16);
+        A = Math.Max(A, Red % 16);
+        C = Math.Max(C, Blue % 16);
+        B = Math.Max(B, 15 - C);
+        D = Math.Max(D, 15 - A);
+        S = Math.Max(S, 15 - H);
         type1 = every_skill.color_to_type(color);
-        if(type1 == 25){
+        if (type1 == 25)
+        {
             Turn.Turn_next(this);
             Destroy(this.gameObject);
         }
@@ -82,7 +87,8 @@ public class y_color : MonoBehaviour
     }
 
     private static GameObject damageTextPrefab;
-    public virtual IEnumerator damaged(bool hit, int damage_score){
+    public virtual IEnumerator damaged(bool hit, int damage_score)
+    {
         if (damageTextPrefab == null)
             damageTextPrefab = Resources.Load<GameObject>("Prefab/damage_score");
         // 1. 텍스트 생성
@@ -123,6 +129,14 @@ public class y_color : MonoBehaviour
     void OnMouseExit()
     {
         Monitor.instance?.Clear();
+    }
+    
+    void OnDestroy()
+    {
+        if (Turn.turn_order.Count > 0 && Turn.turn_order[0] == this)
+        {
+            Turn.Turn_next(this);
+        }
     }
 }
 

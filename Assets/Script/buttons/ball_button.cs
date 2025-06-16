@@ -52,7 +52,9 @@ public class ball: InTurn{
     public diceRollUI diceUI;
     public ball_button ballbutton = GameObject.FindObjectOfType<ball_button>();
     public virtual IEnumerator use_ball(y_color attacker, y_color defender){
-        int hit_score = 20*defender.hp/(defender.full_hp());
+        int hit_score = 20*defender.hp/defender.full_hp();
+        if (ballbutton.ball_mode == 0)
+            hit_score = Math.Min(20, hit_score*2);
         int hit_dice = rnd.Next(1,21);
         if (diceUI == null)
             diceUI = GameObject.FindObjectOfType<diceRollUI>();
