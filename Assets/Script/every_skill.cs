@@ -137,9 +137,9 @@ public class every_skill : MonoBehaviour{
         normalskill[12] = new type12.skill221();
         normalskill[13] = new type13.skill212();
         normalskill[14] = new type14.skill112();
-        normalskill[15] = new type15.skill223();
+        normalskill[15] = new type15.skill213();
         normalskill[16] = new type16.skill122();
-        normalskill[17] = new type17.skill313();
+        normalskill[17] = new type17.skill312();
 
         normalskill[18] = new type18.skill322();
         normalskill[19] = new type19.skill223();
@@ -246,7 +246,7 @@ public class every_skill : MonoBehaviour{
             {7, 20, 22}
         },
         {
-            {1, 10, 17},
+            {1, 17, 10},
             {8, 18, 23},
             {4, 21, 26}
         }
@@ -274,6 +274,12 @@ public class every_skill : MonoBehaviour{
         }
         return tmp;
     }
+    public static monoskill check_get_skill(Color32 color){
+        int[] skill_color = {CustomSkillIndex(color.r), CustomSkillIndex(color.g),CustomSkillIndex(color.b)};
+        int type1 = color_to_type(color);
+        monoskill tmp = skillset[type1, skill_color[0],skill_color[1],skill_color[2]];
+        return tmp;
+    }
     public static int CustomSkillIndex(byte value)
     {
         if (value <= 31) return 0;
@@ -291,11 +297,11 @@ public class every_skill : MonoBehaviour{
         (new Color32(0,255,0,255),"Grass"), // 3
         (new Color32(255,255,0,255),"Electric"), // 4
         (new Color32(0,255,255,255),"Ice"), // 5
-        (new Color32(255,0,255,255),"Fighting"), // 6
-        (new Color32(255,128,0,255),"Poison"), // 7
-        (new Color32(255,128,128,255),"Ground"), //8
+        (new Color32(128,0,0,255),"Fighting"), // 6
+        (new Color32(128,255,0,255),"Poison"), // 7
+        (new Color32(255,128,0,255),"Ground"), //8
         (new Color32(0,128,255,255),"Flying"), // 9
-        (new Color32(128,0,255,255),"Psychic"), // 10
+        (new Color32(255,0,255,255),"Psychic"), // 10
         (new Color32(0,128,0,255),"Insect"), // 11
         (new Color32(128,128,0,255),"Rock"), // 12
         (new Color32(128,0,128,255),"Ghost"), // 13

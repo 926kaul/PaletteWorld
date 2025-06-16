@@ -129,7 +129,7 @@ public class type19{
         }
     }
     public class skill224 : monoskill{
-        public skill224() : base(224, "물수리검", 25, 100, 19, 0, true, 100, "명중 시 이 기술을 다시 시전한다 (최대 5회)"){
+        public skill224() : base(224, "물수리검", 25, 90, 19, 0, true, 100, "명중 시 이 기술을 다시 시전한다 (최대 5회)"){
         }
         
         public override IEnumerator skill_effect(y_color attacker, y_color defender){

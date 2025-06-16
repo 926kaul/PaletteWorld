@@ -63,12 +63,10 @@ public class StageManager : MonoBehaviour
                 byte b = (byte)rnd.Next(0, 256);
                 bool tooDark = r <= 64 && g <= 64 && b <= 64;
                 bool tooBright = r >= 192 && g >= 192 && b >= 192;
+                newColor = new Color32(r, g, b, 255);
 
-                if (!tooDark && !tooBright)
-                {
-                    newColor = new Color32(r, g, b, 255);
+                if (!tooDark && !tooBright && every_skill.check_get_skill(newColor) != null)
                     break;
-                }
             }
 
             // 3. 적 생성

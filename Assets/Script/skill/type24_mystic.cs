@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class type24{
+public class type24
+{
     public class skill132 : monoskill
     {
         public skill132() : base(132, "최면술", 0, 60, 24, 0, false, 2, "광역(2), 자신을 제외한 주변 색깔들을 잠듦 상태로 만든다.")
@@ -97,26 +98,32 @@ public class type24{
                 yield break;
             }
         }
-            
-        public override void ApplyAdditional(bool hit, y_color attacker, y_color defender, int damage_score){
-            if(defender.cc is ncc && hit){
+
+        public override void ApplyAdditional(bool hit, y_color attacker, y_color defender, int damage_score)
+        {
+            if (defender.cc is ncc && hit)
+            {
                 defender.cc = new slp(defender);
             }
             return;
         }
     }
-    public class skill142 : monoskill{
-        public skill142() : base(142, "트릭룸", 0, 100, 24, 0, false, 100, "스테이지 상의 모든 색깔들의 속도를 반전시킨다."){
+    public class skill142 : monoskill
+    {
+        public skill142() : base(142, "트릭룸", 0, 100, 24, 0, false, 100, "스테이지 상의 모든 색깔들의 속도를 반전시킨다.")
+        {
         }
-        public override IEnumerator use_skill(y_color attacker, y_color defender){
+        public override IEnumerator use_skill(y_color attacker, y_color defender)
+        {
 
-            int hit_dice = rnd.Next(1,21);
+            int hit_dice = rnd.Next(1, 21);
             int dicy_point = 0;
 
-            if((this.type1 == attacker.type1) || (this.type1 == attacker.type2)) //자속보정으로 유리보정
+            if ((this.type1 == attacker.type1) || (this.type1 == attacker.type2)) //자속보정으로 유리보정
                 dicy_point += 1;
-            
-            if(this.efrange > 3){
+
+            if (this.efrange > 3)
+            {
                 Type targetType = (attacker is my_color) ? typeof(enemy_color) : typeof(my_color);
 
                 y_color[] allUnits = GameObject.FindObjectsOfType<y_color>();
@@ -131,46 +138,53 @@ public class type24{
                     }
                 }
             } // 원거리 (사거지 3초과)인 기술을 쓰는데 상태이상이 없는 상대가 거리 3이하에 있으면 압박을 받아 불리보정
-            
 
-            if(dicy_point > 0){
-                int hit_dice2 = rnd.Next(1,21);
+
+            if (dicy_point > 0)
+            {
+                int hit_dice2 = rnd.Next(1, 21);
                 if (diceUI == null)
                     diceUI = GameObject.FindObjectOfType<diceRollUI>();
                 yield return diceUI.StartCoroutine(diceUI.AdvantageRoll(hit_dice, hit_dice2, 1));
-                hit_dice = Math.Max(hit_dice,hit_dice2);
+                hit_dice = Math.Max(hit_dice, hit_dice2);
             }
-            else if (dicy_point == 0){
+            else if (dicy_point == 0)
+            {
                 if (diceUI == null)
-                        diceUI = GameObject.FindObjectOfType<diceRollUI>();
+                    diceUI = GameObject.FindObjectOfType<diceRollUI>();
                 yield return diceUI.StartCoroutine(diceUI.Roll(hit_dice, 1));
             }
-            else{
-                int hit_dice2 = rnd.Next(1,21);
+            else
+            {
+                int hit_dice2 = rnd.Next(1, 21);
                 if (diceUI == null)
                     diceUI = GameObject.FindObjectOfType<diceRollUI>();
                 yield return diceUI.StartCoroutine(diceUI.DisadvantageRoll(hit_dice, hit_dice2, 1));
-                hit_dice = Math.Min(hit_dice,hit_dice2);
+                hit_dice = Math.Min(hit_dice, hit_dice2);
             }
 
 
-            if(attacker.cc.effect(hit_dice) && hit_dice > 1){
+            if (attacker.cc.effect(hit_dice) && hit_dice > 1)
+            {
                 yield return this.skill_effect(attacker, defender);
                 y_color[] allUnits = GameObject.FindObjectsOfType<y_color>();
                 foreach (y_color unit in allUnits)
                 {
                     Vector3 pos = unit.transform.position;
-                    if (pos.x >= 0 && pos.x <= 18 && pos.y >= 0 && pos.y <= 18){
+                    if (pos.x >= 0 && pos.x <= 18 && pos.y >= 0 && pos.y <= 18)
+                    {
                         unit.S = 15 - unit.S;
                     }
                 }
             }
-            else{
+            else
+            {
                 yield break;
             }
 
         }
-        public override IEnumerator skill_effect(y_color attacker, y_color defender){
+        public override IEnumerator skill_effect(y_color attacker, y_color defender)
+        {
             Camera mainCam = Camera.main;
             if (mainCam == null) yield break;
 
@@ -190,8 +204,134 @@ public class type24{
             }
         }
 
-        public override bool skill_availablity(y_color attacker, y_color defender){
+        public override bool skill_availablity(y_color attacker, y_color defender)
+        {
             return true;
         }
+    }
+    public class skill042 : monoskill
+    {
+        public skill042() : base(042, "사이코\n브레이크", 100, 100, 24, 24, false, 100, "광역 상대(세로 1), 물리 피해를 준다")
+        {
+        }
+        public override IEnumerator skill_effect(y_color attacker, y_color defender)
+        {
+            Vector3 center = defender.transform.position;
+
+            GameObject prefab = Resources.Load<GameObject>("Prefab/NormalBeam");
+            GameObject beam = UnityEngine.Object.Instantiate(prefab, center, Quaternion.identity);
+
+            // 크기 조절
+            beam.transform.localScale = new Vector3(2f, 100f, 1f);
+
+            // SpriteRenderer 설정
+            SpriteRenderer sr = beam.GetComponent<SpriteRenderer>();
+            if (sr != null)
+            {
+                sr.color = new Color(0f, 1f, 0.5f, 0f);  // 시작은 투명
+                sr.sortingLayerName = "Effect";
+                sr.sortingOrder = 10;
+            }
+
+            float duration = 0.4f;  // 전체 지속 시간
+            float half = duration / 2f;
+            float elapsed = 0f;
+
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                float alpha = (elapsed < half)
+                    ? Mathf.Lerp(0f, 1f, elapsed / half)    // 전반부: 투명 → 불투명
+                    : Mathf.Lerp(1f, 0f, (elapsed - half) / half); // 후반부: 불투명 → 투명
+
+                if (sr != null)
+                {
+                    sr.color = new Color(0f, 1f, 0.5f, alpha);
+                }
+
+                yield return null;
+            }
+
+            GameObject.Destroy(beam);
+        }
+
+
+        public override IEnumerator use_skill(y_color attacker, y_color defender)
+        {
+
+            int hit_score = (100 - this.accuracy) / 5 + Math.Max((this.phy ? defender.B : defender.D) - (this.phy ? attacker.A : attacker.C), 0) / 2;
+            int hit_dice = rnd.Next(1, 21);
+            int dicy_point = 0;
+
+            if ((this.type1 == attacker.type1) || (this.type1 == attacker.type2)) //자속보정으로 유리보정
+                dicy_point += 1;
+
+            if (this.efrange > 3)
+            {
+                Type targetType = (attacker is my_color) ? typeof(enemy_color) : typeof(my_color);
+
+                y_color[] allUnits = GameObject.FindObjectsOfType<y_color>();
+                foreach (y_color unit in allUnits)
+                {
+                    if (unit.GetType() != targetType) continue;
+
+                    if (unit.cc is ncc && Vector3.Distance(attacker.transform.position, unit.transform.position) <= 3f)
+                    {
+                        dicy_point -= 1;
+                        break;
+                    }
+                }
+            } // 원거리 (사거지 3초과)인 기술을 쓰는데 상태이상이 없는 상대가 거리 3이하에 있으면 압박을 받아 불리보정
+
+
+            if (dicy_point > 0)
+            {
+                int hit_dice2 = rnd.Next(1, 21);
+                if (diceUI == null)
+                    diceUI = GameObject.FindObjectOfType<diceRollUI>();
+                yield return diceUI.StartCoroutine(diceUI.AdvantageRoll(hit_dice, hit_dice2, hit_score));
+                hit_dice = Math.Max(hit_dice, hit_dice2);
+            }
+            else if (dicy_point == 0)
+            {
+                if (diceUI == null)
+                    diceUI = GameObject.FindObjectOfType<diceRollUI>();
+                yield return diceUI.StartCoroutine(diceUI.Roll(hit_dice, hit_score));
+            }
+            else
+            {
+                int hit_dice2 = rnd.Next(1, 21);
+                if (diceUI == null)
+                    diceUI = GameObject.FindObjectOfType<diceRollUI>();
+                yield return diceUI.StartCoroutine(diceUI.DisadvantageRoll(hit_dice, hit_dice2, hit_score));
+                hit_dice = Math.Min(hit_dice, hit_dice2);
+            }
+
+            if (attacker.cc.effect(hit_dice))
+            {
+                yield return this.skill_effect(attacker, defender);
+                bool hit; int damage_score;
+                y_color[] allUnits = GameObject.FindObjectsOfType<y_color>();
+                Type targetType = (attacker is my_color) ? typeof(enemy_color) : typeof(my_color);
+
+                foreach (y_color unit in allUnits)
+                {
+                    if (Math.Abs(defender.transform.position.x - unit.transform.position.x) <= 1f)
+                    {
+                        if (unit.GetType() != targetType) continue;
+                        hit_score = (100 - this.accuracy) / 5 + Math.Max(unit.B - (this.phy ? attacker.A : attacker.C), 0) / 2;
+                        (hit, damage_score) = this.calc_skill(attacker, unit, hit_dice, hit_score);
+                        CoroutineRunner.Instance.StartCoroutine(unit.damaged(hit, damage_score));
+                        ApplyAdditional(hit, attacker, unit, damage_score);
+                    }
+                }
+
+            }
+            else
+            {
+                yield break;
+            }
+        }
+
     }
 }

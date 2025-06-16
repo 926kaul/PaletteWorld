@@ -7,7 +7,7 @@ public class type0
 {
     public class skill111 : monoskill
     {
-        public skill111() : base(111, "자폭", 200, 100, 0, 25, true, 2, "광역(2), 자신이 폭발해 피해를 입히고 죽게 된다")
+        public skill111() : base(111, "자폭", 200, 100, 0, 25, true, 2, "광역 상대(2), 자신이 폭발해 적에게 피해를 입히고 죽게 된다")
         {
         }
         public override IEnumerator skill_effect(y_color attacker, y_color defender)
@@ -80,11 +80,13 @@ public class type0
                 yield return this.skill_effect(attacker, defender);
                 bool hit; int damage_score;
                 y_color[] allUnits = GameObject.FindObjectsOfType<y_color>();
+                Type targetType = (attacker is my_color) ? typeof(enemy_color) : typeof(my_color);
+
                 foreach (y_color unit in allUnits)
                 {
                     if (Vector3.Distance(attacker.transform.position, unit.transform.position) <= 2f)
                     {
-                        if (unit == attacker) continue;
+                        if (unit.GetType() != targetType) continue;
                         hit_score = (100 - this.accuracy) / 5 + Math.Max((this.phy ? unit.B : unit.D) - (this.phy ? attacker.A : attacker.C), 0) / 2;
                         (hit, damage_score) = this.calc_skill(attacker, unit, hit_dice, hit_score);
                         CoroutineRunner.Instance.StartCoroutine(unit.damaged(hit, damage_score));
@@ -104,7 +106,7 @@ public class type0
     }
     public class skill221 : monoskill
     {
-        public skill221() : base(221, "대폭발", 250, 90, 0, 12, true, 3, "광역(3), 자신이 폭발해 피해를 입히고 죽게 된다")
+        public skill221() : base(221, "대폭발", 250, 90, 0, 12, true, 3, "광역 전체(3), 자신이 폭발해 모두에게 피해를 입히고 죽게 된다")
         {
         }
         public override IEnumerator skill_effect(y_color attacker, y_color defender)
@@ -1426,7 +1428,7 @@ public class type0
 
     public class skill133 : monoskill
     {
-        public skill133() : base(133, "트라이어택", 80, 100, 0, 5, false, 100, "20% 확률로 상대에게 화상, 마비, 얼음 상태를 중 하나를 부여한다")
+        public skill133() : base(133, "트라이어택", 80, 100, 0, 5, false, 100, "20% 확률로 상대에게 화상, 마비, 동상 상태를 중 하나를 부여한다")
         {
         }
 
@@ -1773,7 +1775,7 @@ public class type0
 
     public class skill323 : monoskill
     {
-        public skill323() : base(323, "하이퍼\n보이스", 100, 100, 0, 24, false, 3, "광역(3), 주변 모든 색깔에게 피해를 준다")
+        public skill323() : base(323, "하이퍼\n보이스", 100, 100, 0, 24, false, 3, "광역 전체(3), 주변 모든 색깔에게 피해를 준다")
         {
         }
         public override IEnumerator skill_effect(y_color attacker, y_color defender)
@@ -1802,13 +1804,11 @@ public class type0
 
             if (this.efrange > 3)
             {
-                Type targetType = (attacker is my_color) ? typeof(enemy_color) : typeof(my_color);
 
                 y_color[] allUnits = GameObject.FindObjectsOfType<y_color>();
                 foreach (y_color unit in allUnits)
                 {
-                    if (unit.GetType() != targetType) continue;
-
+                    if (unit == attacker) continue;
                     if (unit.cc is ncc && Vector3.Distance(attacker.transform.position, unit.transform.position) <= 3f)
                     {
                         dicy_point -= 1;

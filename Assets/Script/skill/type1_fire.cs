@@ -215,7 +215,7 @@ public class type1{
     }
 
     public class skill410 : monoskill{
-        public skill410() : base(410, "분화", 150, 100, 1, 8, false, 100, "광역(3), 자신의 HP가 적을 수록 위력이 떨어진다"){
+        public skill410() : base(410, "분화", 150, 100, 1, 8, false, 100, "광역 전체(3), 자신의 HP가 적을 수록 위력이 떨어진다"){
         }
         public override IEnumerator skill_effect(y_color attacker, y_color defender)
         {
@@ -224,7 +224,7 @@ public class type1{
                 position: defender.transform.position,
                 growDuration: 0.45f,
                 fadeDuration: 0.15f,
-                maxScale: 12f,
+                maxScale: 18f,
                 startAlpha: 0.1f,
                 endAlpha: 0.8f,
                 startColor: new Color(192f / 255f, 0f, 0f),
@@ -284,7 +284,7 @@ public class type1{
                 y_color[] allUnits = GameObject.FindObjectsOfType<y_color>();
                 foreach (y_color unit in allUnits)
                 {
-                    if (Vector3.Distance(defender.transform.position, unit.transform.position) <= 2f)
+                    if (Vector3.Distance(defender.transform.position, unit.transform.position) <= 3f)
                     {   
                         hit_score = (100-this.accuracy)/5 + Math.Max((this.phy?unit.B:unit.D)-(this.phy?attacker.A:attacker.C),0)/2;
                         (hit, damage_score) = this.calc_skill(attacker, unit, hit_dice, hit_score);
