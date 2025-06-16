@@ -126,7 +126,7 @@ public class monoskill : InTurn{
             Debug.Log($"{this.name} damage {damage_score}");
             defender.hp -= damage_score;
             if(defender.hp <= 0){
-                UnityEngine.Object.Destroy(defender.gameObject);
+                defender.Kill();
             }
             return (true, damage_score);
         }

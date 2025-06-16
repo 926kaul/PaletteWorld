@@ -100,7 +100,7 @@ public class type0
                 yield break;
             }
             attacker.hp = 0;
-            UnityEngine.Object.Destroy(attacker.gameObject);
+            attacker.Kill();
         }
 
     }
@@ -197,7 +197,7 @@ public class type0
                 yield break;
             }
             attacker.hp = 0;
-            UnityEngine.Object.Destroy(attacker.gameObject);
+            attacker.Kill();
         }
     }
     public class skill121 : monoskill
@@ -242,7 +242,7 @@ public class type0
                 defender.hp -= damage_score;
                 if (defender.hp <= 0)
                 {
-                    UnityEngine.Object.Destroy(defender.gameObject);
+                    defender.Kill();
                 }
                 return (true, damage_score);
             }
@@ -390,7 +390,7 @@ public class type0
             attacker.hp -= damage_score / 4;
             if (attacker.hp <= 0)
             {
-                UnityEngine.Object.Destroy(attacker.gameObject);
+                attacker.Kill();
             }
         }
 
@@ -536,11 +536,11 @@ public class type0
 
                 if (defender.hp <= 0)
                 {
-                    UnityEngine.Object.Destroy(defender.gameObject);
+                    defender.Kill();
                 }
                 if (attacker.hp <= 0)
                 {
-                    UnityEngine.Object.Destroy(attacker.gameObject);
+                    attacker.Kill();
                 }
                 return (true, damage_score);
             }
@@ -658,7 +658,7 @@ public class type0
                 defender.hp -= damage_score;
                 if (defender.hp <= 0)
                 {
-                    UnityEngine.Object.Destroy(defender.gameObject);
+                    defender.Kill();
                 }
                 return (true, damage_score);
             }
@@ -744,7 +744,7 @@ public class type0
                 defender.hp -= damage_score;
                 if (defender.hp <= 0)
                 {
-                    UnityEngine.Object.Destroy(defender.gameObject);
+                    defender.Kill();
                 }
                 return (true, damage_score);
             }
@@ -930,7 +930,7 @@ public class type0
             attacker.hp -= damage_score / 4;
             if (attacker.hp <= 0)
             {
-                UnityEngine.Object.Destroy(attacker.gameObject);
+                attacker.Kill();
             }
         }
 
@@ -1332,7 +1332,7 @@ public class type0
                 defender.hp -= damage_score;
                 if (defender.hp <= 0)
                 {
-                    UnityEngine.Object.Destroy(defender.gameObject);
+                    defender.Kill();
                 }
                 return (true, damage_score);
             }
@@ -1418,7 +1418,7 @@ public class type0
                 defender.hp -= damage_score;
                 if (defender.hp <= 0)
                 {
-                    UnityEngine.Object.Destroy(defender.gameObject);
+                    defender.Kill();
                 }
                 return (true, damage_score);
             }
@@ -1709,11 +1709,11 @@ public class type0
 
                 if (defender.hp <= 0)
                 {
-                    UnityEngine.Object.Destroy(defender.gameObject);
+                    defender.Kill();
                 }
                 if (attacker.hp <= 0)
                 {
-                    UnityEngine.Object.Destroy(attacker.gameObject);
+                    attacker.Kill();
                 }
                 return (true, damage_score);
             }
@@ -1954,7 +1954,7 @@ public class type0
                 Debug.Log($"{this.name} damage {damage_score}");
                 defender.hp -= damage_score;
                 if(defender.hp <= 0){
-                    UnityEngine.Object.Destroy(defender.gameObject);
+                    defender.Kill();
                 }
                 return (true, damage_score);
             }

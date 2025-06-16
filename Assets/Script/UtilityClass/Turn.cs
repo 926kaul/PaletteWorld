@@ -22,10 +22,14 @@ public class Turn : MonoBehaviour
 
     void Update()
     {
-        if (turn_order.Count > 0 && turn_order[0] == null)
+        if (turn_order.Count > 0)
         {
-            Debug.Log("현재 턴 유닛이 파괴됨. 자동으로 다음 턴으로 넘깁니다.");
-            Turn_next(null);
+            var current = turn_order[0];
+
+            if (current == null || current.gameObject == null || !current.gameObject.activeInHierarchy)
+            {
+                Turn_next(current);
+            }
         }
     }
 
@@ -71,6 +75,11 @@ public class Turn : MonoBehaviour
 
         turn_order.Remove(done_color);
         turn_order.RemoveAll(item => item == null);
+
+        while (turn_order.Count > 0 && (turn_order[0] == null || turn_order[0].gameObject == null))
+        {
+            turn_order.RemoveAt(0);
+        }
 
         if (turn_order.Count == 0)
         {

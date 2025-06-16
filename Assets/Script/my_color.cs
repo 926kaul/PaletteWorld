@@ -130,13 +130,22 @@ public class y_color : MonoBehaviour
     {
         Monitor.instance?.Clear();
     }
-    
+
     void OnDestroy()
     {
         if (Turn.turn_order.Count > 0 && Turn.turn_order[0] == this)
         {
             Turn.Turn_next(this);
         }
+    }
+    public void Kill()
+    {
+        if (Turn.turn_order.Count > 0 && Turn.turn_order[0] == this)
+        {
+            Turn.Turn_next(this);
+        }
+
+        Destroy(this.gameObject);
     }
 }
 
@@ -146,19 +155,22 @@ public class my_color : y_color
     private bool isDragging = false;
     private Vector3 offset;
     private Vector3 original_position;
-    public int level=0;
+    public int level = 0;
 
     private Collider2D col;
     // Start is called before the first frame update
-    void Start(){
+    void Start()
+    {
         render = GetComponent<SpriteRenderer>();
         color = render.color;
         Update_stat();
         Update_HP();
         Update_skill();
     }
-    void Update(){
-        if(stage_set==1&&(this.transform.position.x < 0 || this.transform.position.x > 18 || this.transform.position.y < 0 || this.transform.position.y > 18)){
+    void Update()
+    {
+        if (stage_set == 1 && (this.transform.position.x < 0 || this.transform.position.x > 18 || this.transform.position.y < 0 || this.transform.position.y > 18))
+        {
             UnityEngine.Object.Destroy(this.gameObject);
             GameObject.FindObjectOfType<TurnUI>()?.UpdateTurnDisplay();
         }
@@ -167,9 +179,10 @@ public class my_color : y_color
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            for(int i=0; i<4; i++){
+            for (int i = 0; i < 4; i++)
+            {
                 SpriteRenderer render = GlobalVariables.skill_monitors[i].render;
-                render.color = new Color(255,255,255,255);
+                render.color = new Color(255, 255, 255, 255);
                 render.sortingLayerName = "Background";
                 render.sortingOrder = 0;
                 GlobalVariables.skill_monitors[i].mainText.text = "";
@@ -177,36 +190,44 @@ public class my_color : y_color
             GlobalVariables.selected_skill = null;
             GlobalVariables.selected_color = null;
         }
-        if (Input.GetKeyDown(KeyCode.Return)){
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
             if (GlobalVariables.unitThatHandledSpace == null)
             {
                 GlobalVariables.unitThatHandledSpace = this;
                 TryEndTurn();
             }
         }
-        if (Input.GetKeyDown(KeyCode.P)) {
-            if (skills.Count > 0 && !skill_locked) {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            if (skills.Count > 0 && !skill_locked)
+            {
                 // 1. 가능한 모든 (스킬, 타겟) 조합 수집
                 y_color[] allUnits = GameObject.FindObjectsOfType<y_color>();
                 List<enemy_color> possibleTargets = new List<enemy_color>();
-                foreach (y_color unit in allUnits) {
+                foreach (y_color unit in allUnits)
+                {
                     if (unit is enemy_color enemy && enemy != this)
                         possibleTargets.Add(enemy);
                 }
 
                 List<(Color, enemy_color)> usableCombos = new List<(Color, enemy_color)>();
 
-                foreach (Color skillColor in skills) {
+                foreach (Color skillColor in skills)
+                {
                     monoskill skill = every_skill.get_skill(skillColor);
-                    foreach (enemy_color target in possibleTargets) {
-                        if (skill.skill_availablity(this, target)) {
+                    foreach (enemy_color target in possibleTargets)
+                    {
+                        if (skill.skill_availablity(this, target))
+                        {
                             usableCombos.Add((skillColor, target));
                         }
                     }
                 }
 
                 // 2. 사용 가능한 조합이 없다면 리턴
-                if (usableCombos.Count == 0) {
+                if (usableCombos.Count == 0)
+                {
                     Debug.Log("No valid skill-target pair available.");
                     return;
                 }
@@ -298,14 +319,17 @@ public class my_color : y_color
         }
     }
 
-    public void Update_skill(){
+    public void Update_skill()
+    {
         color = render.color;
-        byte[] skill_color = {CustomSkillIndex(color.r), CustomSkillIndex(color.g), CustomSkillIndex(color.b)};
-        if(level < 4 && !skills.Contains(new Color32(skill_color[0],skill_color[1],skill_color[2],255))){
-            skills.Add(new Color32(skill_color[0],skill_color[1],skill_color[2],255));
+        byte[] skill_color = { CustomSkillIndex(color.r), CustomSkillIndex(color.g), CustomSkillIndex(color.b) };
+        if (level < 4 && !skills.Contains(new Color32(skill_color[0], skill_color[1], skill_color[2], 255)))
+        {
+            skills.Add(new Color32(skill_color[0], skill_color[1], skill_color[2], 255));
         }
-        else{
-            skills[level%4] = new Color32(skill_color[0],skill_color[1],skill_color[2],255);
+        else
+        {
+            skills[level % 4] = new Color32(skill_color[0], skill_color[1], skill_color[2], 255);
         }
     }
     public static byte CustomSkillIndex(byte value)
@@ -319,13 +343,16 @@ public class my_color : y_color
         else return 255;
     }
 
-    public void TryEndTurn() {
-        if (Turn.turn_order.Count > 0 && Turn.turn_order[0] == this) {
+    public void TryEndTurn()
+    {
+        if (Turn.turn_order.Count > 0 && Turn.turn_order[0] == this)
+        {
             Turn.Turn_next(this);
         }
     }
-    
-    public void SelectThisUnit(){
+
+    public void SelectThisUnit()
+    {
         GlobalVariables.selected_color = this;
         GlobalVariables.selected_skill = null;
 
@@ -349,5 +376,7 @@ public class my_color : y_color
             }
         }
     }
+    
+
 
 }

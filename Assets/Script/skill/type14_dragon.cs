@@ -42,7 +42,7 @@ public class type14
                 defender.hp -= damage_score;
                 if (defender.hp <= 0)
                 {
-                    UnityEngine.Object.Destroy(defender.gameObject);
+                    defender.Kill();
                 }
                 return (true, damage_score);
             }
