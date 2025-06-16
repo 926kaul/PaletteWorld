@@ -147,6 +147,8 @@ public class my_color : y_color
     private Vector3 offset;
     private Vector3 original_position;
     public int level=0;
+
+    private Collider2D col;
     // Start is called before the first frame update
     void Start(){
         render = GetComponent<SpriteRenderer>();
@@ -219,58 +221,79 @@ public class my_color : y_color
             }
         }
     }
-    void OnMouseDown(){
-        if(stage_set==0){
+    void Awake()
+    {
+        col = GetComponent<Collider2D>();
+    }
+
+    void OnMouseDown()
+    {
+        if (stage_set == 0)
+        {
             Vector3 mousePosition = Input.mousePosition;
             original_position = transform.position;
             mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
             offset = transform.position - mousePosition;
             isDragging = true;
+
+            // 충돌 비활성화
+            if (col != null) col.enabled = false;
+
             this.Update_skill();
         }
-        if(stage_set==1){
+        else if (stage_set == 1)
+        {
             SelectThisUnit();
         }
     }
-    void OnMouseDrag(){
-        if (isDragging){
+
+    void OnMouseDrag()
+    {
+        if (isDragging)
+        {
             Vector3 mousePosition = Input.mousePosition;
             mousePosition = Camera.main.ScreenToWorldPoint(mousePosition) + offset;
             transform.position = new Vector3(mousePosition.x, mousePosition.y, transform.position.z);
         }
     }
+
     void OnMouseUp()
     {
-        isDragging = false;
-        if (stage_set == 0)
+        if (isDragging)
         {
-            Vector3 pos = transform.position;
-            // 위치가 stage 내부이고
-            if ((pos.x >= 0) && (pos.x <= 18) && (pos.y >= 0) && (pos.y <= 9))
+            isDragging = false;
+
+            // 충돌 복원
+            if (col != null) col.enabled = true;
+
+            if (stage_set == 0)
             {
-                // 현재 스테이지 위 my_color 수 세기
-                Collider2D[] hits = Physics2D.OverlapAreaAll(new Vector2(0, 0), new Vector2(18, 9), LayerMask.GetMask("Default"));
-                int count = 0;
-                foreach (var col in hits)
+                Vector3 pos = transform.position;
+
+                if ((pos.x >= 0) && (pos.x <= 18) && (pos.y >= 0) && (pos.y <= 9))
                 {
-                    my_color mc = col.GetComponent<my_color>();
-                    if (mc != null && mc.stage_set == 1 && mc != this)
-                        count++;
+                    Collider2D[] hits = Physics2D.OverlapAreaAll(new Vector2(0, 0), new Vector2(18, 9), LayerMask.GetMask("Default"));
+                    int count = 0;
+                    foreach (var hit in hits)
+                    {
+                        my_color mc = hit.GetComponent<my_color>();
+                        if (mc != null && mc.stage_set == 1 && mc != this)
+                            count++;
+                    }
+
+                    if (count >= 3)
+                    {
+                        transform.position = original_position;
+                        return;
+                    }
+
+                    stage_set = 1;
+                    transform.position = new Vector3(Mathf.Round(pos.x), Mathf.Round(pos.y), Mathf.Round(pos.z));
                 }
-                // 3개 초과면 안 됨
-                if (count >= 3)
+                else
                 {
-                    transform.position = original_position; // 되돌리기
-                    return;
+                    transform.position = original_position;
                 }
-                // 통과 시 stage에 올리기
-                stage_set = 1;
-                transform.position = new Vector3(Mathf.Round(pos.x), Mathf.Round(pos.y), Mathf.Round(pos.z));
-            }
-            else
-            {
-                // stage 아닌 곳이면 되돌리기
-                transform.position = original_position;
             }
         }
     }

@@ -1575,7 +1575,7 @@ public class type0
             float offset = 1.5f;
             float speed = 50f;
             float holdDuration = 0.05f;
-            float maxTime = 1.0f;
+            float maxTime = 0.2f;
 
             Vector3 startPos = defender.transform.position + perpendicular * offset;
             Vector3 endPos = defender.transform.position - perpendicular * offset;

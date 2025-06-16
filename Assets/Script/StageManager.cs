@@ -72,6 +72,7 @@ public class StageManager : MonoBehaviour
             // 3. 적 생성
             GameObject e = Instantiate(enemyPrefab, new Vector3(pos.x, pos.y, 0), Quaternion.identity);
             enemy_color ec = e.GetComponent<enemy_color>();
+
             ec.color = newColor;
             ec.Update_stat();
             ec.hp = 55 + 3 * ec.H;
